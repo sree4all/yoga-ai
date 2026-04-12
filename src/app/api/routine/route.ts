@@ -31,7 +31,34 @@ function postJson(body: unknown, init?: ResponseInit) {
   const backend = resolveRoutineGenerationBackend();
   const headers = new Headers(init?.headers);
   headers.set("X-Yoga-Routine-Backend", backend);
+  if (
+    body &&
+    typeof body === "object" &&
+    "kind" in body &&
+    typeof (body as { kind: unknown }).kind === "string"
+  ) {
+    headers.set("X-Yoga-Routine-Outcome", (body as { kind: string }).kind);
+  }
   return NextResponse.json(body, { ...init, headers });
+}
+
+/** Searchable in Vercel Runtime Logs (request exports do not include stdout). */
+function logGenerationFailure(err: unknown) {
+  const e = err instanceof Error ? err : new Error(String(err));
+  const aborted =
+    e.name === "AbortError" ||
+    (typeof e.message === "string" && e.message.toLowerCase().includes("abort"));
+  console.error(
+    JSON.stringify({
+      source: "yoga-ai-routine",
+      event: "generation_failed",
+      backend: resolveRoutineGenerationBackend(),
+      errorName: e.name,
+      errorMessage: e.message.slice(0, 500),
+      aborted,
+    }),
+  );
+  console.error("[routine] generation failed:", err);
 }
 
 export async function POST(req: Request) {
@@ -117,7 +144,7 @@ export async function POST(req: Request) {
     }
     return postJson(check.data);
   } catch (err) {
-    console.error("[routine] generation failed:", err);
+    logGenerationFailure(err);
     clearTimeout(timer);
     const breath = entry.breathingFallback;
     const fallback = {
