@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yoga-ai.local/contracts/routine-request.schema.json",
+  "title": "RoutineRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["disclaimerAcknowledged", "discomfortType", "bodyRegion", "intensity"],
+  "properties": {
+    "disclaimerAcknowledged": { "type": "boolean", "const": true },
+    "discomfortType": { "type": "string", "minLength": 1 },
+    "bodyRegion": { "type": "string", "minLength": 1 },
+    "intensity": { "type": "string", "enum": ["mild", "moderate", "severe"] },
+    "optionalNote": { "type": "string", "maxLength": 500 }
+  }
+}
