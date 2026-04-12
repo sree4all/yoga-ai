@@ -32,6 +32,8 @@ export async function generateRoutineStructured(
   const orchestratorApiKey = process.env.GENORCHESTRATOR_API_KEY?.trim();
   const openAiKey = process.env.OPENAI_API_KEY?.trim();
 
+  console.info("[routine] generation backend:", resolveRoutineGenerationBackend());
+
   if (baseUrl && orchestratorApiKey) {
     return callGenOrchestratorChatCompletions(
       baseUrl,
@@ -52,6 +54,19 @@ export async function generateRoutineStructured(
 function normalizeBaseUrl(url: string | undefined): string | null {
   if (!url?.trim()) return null;
   return url.replace(/\/+$/, "");
+}
+
+/** Which backend `generateRoutineStructured` will use (for diagnostics; no secrets). */
+export function resolveRoutineGenerationBackend():
+  | "orchestrator"
+  | "openai"
+  | "mock" {
+  const baseUrl = normalizeBaseUrl(process.env.GENORCHESTRATOR_BASE_URL);
+  const orchestratorApiKey = process.env.GENORCHESTRATOR_API_KEY?.trim();
+  const openAiKey = process.env.OPENAI_API_KEY?.trim();
+  if (baseUrl && orchestratorApiKey) return "orchestrator";
+  if (openAiKey) return "openai";
+  return "mock";
 }
 
 /**

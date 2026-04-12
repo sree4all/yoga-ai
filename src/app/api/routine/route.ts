@@ -6,6 +6,7 @@ import { buildDiscomfortProfile } from "@/lib/knowledge/select";
 import {
   generateRoutineStructured,
   mockRoutineFromKnowledge,
+  resolveRoutineGenerationBackend,
 } from "@/lib/gen/orchestrator";
 import { validateRoutineAgainstAvoidList } from "@/lib/knowledge/validate-routine";
 import type { DiscomfortType, BodyRegion } from "@/lib/types/intake";
@@ -24,6 +25,13 @@ function timeoutMs(): number {
   const raw = process.env.ROUTINE_GEN_TIMEOUT_MS;
   const n = raw ? parseInt(raw, 10) : 25000;
   return Number.isFinite(n) && n > 0 ? n : 25000;
+}
+
+function postJson(body: unknown, init?: ResponseInit) {
+  const backend = resolveRoutineGenerationBackend();
+  const headers = new Headers(init?.headers);
+  headers.set("X-Yoga-Routine-Backend", backend);
+  return NextResponse.json(body, { ...init, headers });
 }
 
 export async function POST(req: Request) {
@@ -63,7 +71,7 @@ export async function POST(req: Request) {
     if (!check.success) {
       return NextResponse.json({ error: "Internal response shape error" }, { status: 500 });
     }
-    return NextResponse.json(check.data);
+    return postJson(check.data);
   }
 
   const profile = buildDiscomfortProfile(
@@ -107,12 +115,9 @@ export async function POST(req: Request) {
     if (!check.success) {
       return NextResponse.json({ error: "Response validation failed" }, { status: 500 });
     }
-    return NextResponse.json(check.data);
+    return postJson(check.data);
   } catch (err) {
-    console.error(
-      "[routine] generation failed:",
-      err instanceof Error ? err.message : err,
-    );
+    console.error("[routine] generation failed:", err);
     clearTimeout(timer);
     const breath = entry.breathingFallback;
     const fallback = {
@@ -129,11 +134,16 @@ export async function POST(req: Request) {
     if (!check.success) {
       return NextResponse.json({ error: "Fallback shape error" }, { status: 500 });
     }
-    return NextResponse.json(check.data);
+    return postJson(check.data);
   }
 }
 
-/** Dev-only: GET health */
+/** Health + which generation path is configured (no secrets). */
 export async function GET() {
-  return NextResponse.json({ ok: true, service: "yoga-ai-routine" });
+  return NextResponse.json({
+    ok: true,
+    service: "yoga-ai-routine",
+    generationBackend: resolveRoutineGenerationBackend(),
+    routineGenTimeoutMs: timeoutMs(),
+  });
 }
