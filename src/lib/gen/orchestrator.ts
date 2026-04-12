@@ -114,7 +114,7 @@ async function callGenOrchestratorChatCompletions(
 
   let parsed: unknown;
   try {
-    parsed = JSON.parse(content);
+    parsed = parseModelJsonContent(content);
   } catch {
     throw new Error("GenOrchestrator: assistant content is not valid JSON");
   }
@@ -174,8 +174,35 @@ async function callOpenAiJsonMode(
   };
   const content = json.choices?.[0]?.message?.content;
   if (!content) throw new Error("OpenAI: empty content");
-  const parsed = JSON.parse(content) as unknown;
+  const parsed = parseModelJsonContent(content);
   return parseRoutinePayload(parsed);
+}
+
+/** Parse JSON from model text; tolerates markdown fences or leading prose (HTTP 200 can still fail strict JSON.parse). */
+function parseModelJsonContent(content: string): unknown {
+  const trimmed = content.trim();
+  const attempts: (() => unknown)[] = [
+    () => JSON.parse(trimmed),
+    () => {
+      const fence = /^```(?:json)?\s*\n?([\s\S]*?)\n?```$/im.exec(trimmed);
+      if (!fence) throw new Error("no fence");
+      return JSON.parse(fence[1].trim());
+    },
+    () => {
+      const start = trimmed.indexOf("{");
+      const end = trimmed.lastIndexOf("}");
+      if (start < 0 || end <= start) throw new Error("no object");
+      return JSON.parse(trimmed.slice(start, end + 1));
+    },
+  ];
+  for (const run of attempts) {
+    try {
+      return run();
+    } catch {
+      /* try next strategy */
+    }
+  }
+  throw new Error("Model content is not valid JSON");
 }
 
 /** Deterministic mock — valid JSON shape, ~10 minutes total duration. */

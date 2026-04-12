@@ -108,7 +108,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Response validation failed" }, { status: 500 });
     }
     return NextResponse.json(check.data);
-  } catch {
+  } catch (err) {
+    console.error(
+      "[routine] generation failed:",
+      err instanceof Error ? err.message : err,
+    );
     clearTimeout(timer);
     const breath = entry.breathingFallback;
     const fallback = {
