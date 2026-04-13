@@ -187,6 +187,28 @@ function delay(ms: number, signal?: AbortSignal): Promise<void> {
   });
 }
 
+/** Billing / credit exhaustion — retries do not help. */
+function openAiInsufficientQuotaFromBody(bodyText: string): boolean {
+  try {
+    const j = JSON.parse(bodyText) as {
+      error?: { code?: string; type?: string };
+    };
+    return (
+      j.error?.code === "insufficient_quota" ||
+      j.error?.type === "insufficient_quota"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function openAiMaxCompletionTokens(): number {
+  const raw = process.env.OPENAI_MAX_TOKENS?.trim();
+  const n = raw ? parseInt(raw, 10) : 2048;
+  if (!Number.isFinite(n)) return 2048;
+  return Math.min(8192, Math.max(256, n));
+}
+
 async function callOpenAiJsonMode(
   systemPrompt: string,
   userPrompt: string,
@@ -196,6 +218,7 @@ async function callOpenAiJsonMode(
   const maxAttempts = openAiMaxAttempts();
   const body = JSON.stringify({
     model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+    max_tokens: openAiMaxCompletionTokens(),
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: systemPrompt },
@@ -226,6 +249,9 @@ async function callOpenAiJsonMode(
     }
 
     const t = await res.text();
+    if (res.status === 429 && openAiInsufficientQuotaFromBody(t)) {
+      throw new Error(`OpenAI error 429: ${t}`);
+    }
     if (res.status === 429 && attempt < maxAttempts - 1) {
       const fromHeader = retryAfterMsFromHeaders(res.headers);
       const backoff = Math.min(1000 * 2 ** attempt, 8000);
