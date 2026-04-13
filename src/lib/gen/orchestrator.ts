@@ -16,8 +16,8 @@ export interface GeneratedRoutinePayload {
  * - Auth: `Authorization: Bearer <API key>` (keys from `python scripts/create_user.py` on the orchestrator)
  *
  * Priority:
- * 1. `GENORCHESTRATOR_BASE_URL` + `GENORCHESTRATOR_API_KEY` → GenOrchestrator
- * 2. `OPENAI_API_KEY` only → direct OpenAI (dev / bypass orchestrator)
+ * 1. `OPENAI_API_KEY` → direct OpenAI (wins if set — avoids accidental orchestrator when both are in env)
+ * 2. `GENORCHESTRATOR_BASE_URL` + `GENORCHESTRATOR_API_KEY` → GenOrchestrator
  * 3. Deterministic mock from static knowledge
  */
 export async function generateRoutineStructured(
@@ -34,6 +34,10 @@ export async function generateRoutineStructured(
 
   console.info("[routine] generation backend:", resolveRoutineGenerationBackend());
 
+  if (openAiKey) {
+    return callOpenAiJsonMode(systemPrompt, userPrompt, openAiKey, signal);
+  }
+
   if (baseUrl && orchestratorApiKey) {
     return callGenOrchestratorChatCompletions(
       baseUrl,
@@ -42,10 +46,6 @@ export async function generateRoutineStructured(
       userPrompt,
       signal,
     );
-  }
-
-  if (openAiKey) {
-    return callOpenAiJsonMode(systemPrompt, userPrompt, openAiKey, signal);
   }
 
   return mockRoutineFromKnowledge(entry);
@@ -64,8 +64,8 @@ export function resolveRoutineGenerationBackend():
   const baseUrl = normalizeBaseUrl(process.env.GENORCHESTRATOR_BASE_URL);
   const orchestratorApiKey = process.env.GENORCHESTRATOR_API_KEY?.trim();
   const openAiKey = process.env.OPENAI_API_KEY?.trim();
-  if (baseUrl && orchestratorApiKey) return "orchestrator";
   if (openAiKey) return "openai";
+  if (baseUrl && orchestratorApiKey) return "orchestrator";
   return "mock";
 }
 

@@ -21,10 +21,10 @@ Create `.env.local` in the project root (never commit secrets):
 | `GENORCHESTRATOR_MODEL` | Optional (default `gpt-3.5-turbo`) |
 | `GENORCHESTRATOR_PROVIDER_PREFERENCE` | Optional — e.g. `cost_optimized` (see upstream `docs/api.md`) |
 | `GENORCHESTRATOR_USE_JSON_OBJECT` | Optional — `false` if `response_format` json_object is unsupported |
-| `OPENAI_API_KEY` | Used only when **`GENORCHESTRATOR_BASE_URL` is unset** — direct OpenAI JSON mode (server-side) |
+| `OPENAI_API_KEY` | **Direct OpenAI** JSON mode (server-side). If set, it is used **before** GenOrchestrator even when orchestrator vars exist. |
 | `OPENAI_MODEL` | Optional override (default `gpt-4o-mini`) |
 
-> Full integration notes: `docs/GENORCHESTRATOR.md`. With no GenOrchestrator base URL and no `OPENAI_API_KEY`, the app uses a **deterministic mock**.
+> Full integration notes: `docs/GENORCHESTRATOR.md`. With no `OPENAI_API_KEY` and no orchestrator base + key, the app uses a **deterministic mock**.
 
 ## Install and run
 

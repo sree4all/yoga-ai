@@ -20,7 +20,7 @@ Minimal **Next.js (App Router)** web app: structured intake → deterministic sa
 
 Copy `.env.example` to `.env.local`. **Never** commit secrets. Orchestration stays **server-side** only (`src/lib/gen/orchestrator.ts`, `src/app/api/routine/route.ts`).
 
-**GenOrchestrator** ([sree4all/genorchestrator](https://github.com/sree4all/genorchestrator)): set `GENORCHESTRATOR_BASE_URL` + `GENORCHESTRATOR_API_KEY` to use `POST /v1/chat/completions`. See [`docs/GENORCHESTRATOR.md`](docs/GENORCHESTRATOR.md).
+**LLM routing** (server-only): if `OPENAI_API_KEY` is set, Yoga.ai calls **OpenAI** directly. Otherwise, **GenOrchestrator** ([sree4all/genorchestrator](https://github.com/sree4all/genorchestrator)) is used when `GENORCHESTRATOR_BASE_URL` + `GENORCHESTRATOR_API_KEY` are set. See [`docs/GENORCHESTRATOR.md`](docs/GENORCHESTRATOR.md).
 
 ## Disclaimer
 

@@ -33,10 +33,10 @@ GENORCHESTRATOR_BASE_URL=http://localhost:8000
 GENORCHESTRATOR_API_KEY=go_your_key_from_create_user
 ```
 
-## Fallbacks
+## Fallbacks (routing order in `src/lib/gen/orchestrator.ts`)
 
-1. **GenOrchestrator** when `GENORCHESTRATOR_BASE_URL` and `GENORCHESTRATOR_API_KEY` are both set.  
-2. **Direct OpenAI** when the base URL is **not** set but `OPENAI_API_KEY` is set (development only).  
+1. **Direct OpenAI** when `OPENAI_API_KEY` is set (takes precedence over GenOrchestrator if both are configured).  
+2. **GenOrchestrator** when `GENORCHESTRATOR_BASE_URL` and `GENORCHESTRATOR_API_KEY` are both set and OpenAI is not.  
 3. **Mock** from static knowledge when neither path is configured.
 
 ## References
