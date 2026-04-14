@@ -1,19 +1,49 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DisclaimerGate } from "@/components/disclaimer/DisclaimerGate";
 import { IntakeFlow } from "@/components/intake/IntakeFlow";
 import { RoutineResult } from "@/components/routine/RoutineResult";
 import { routineResponseSchema, type RoutineResponse } from "@/lib/contracts/routine-zod";
+import type { BodyRegion, DiscomfortType } from "@/lib/types/intake";
+import type { IntakeFormState } from "@/lib/intake/state";
 
 type Phase = "disclaimer" | "intake" | "result";
+
+function parseIntakeFromBody(body: Record<string, unknown> | null): IntakeFormState | null {
+  if (!body) return null;
+  const dt = body.discomfortTypes;
+  const br = body.bodyRegions;
+  if (!Array.isArray(dt) || !Array.isArray(br)) return null;
+  const intensity = body.intensity;
+  if (intensity !== "mild" && intensity !== "moderate" && intensity !== "severe") {
+    return null;
+  }
+  return {
+    discomfortTypes: [...dt] as DiscomfortType[],
+    bodyRegions: [...br] as BodyRegion[],
+    intensity,
+    optionalNote: typeof body.optionalNote === "string" ? body.optionalNote : "",
+  };
+}
 
 export function YogaSession() {
   const [phase, setPhase] = useState<Phase>("disclaimer");
   const [loading, setLoading] = useState(false);
+  const [slowHint, setSlowHint] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RoutineResponse | null>(null);
   const [lastBody, setLastBody] = useState<Record<string, unknown> | null>(null);
+  const [intakeInitial, setIntakeInitial] = useState<IntakeFormState | null>(null);
+
+  useEffect(() => {
+    if (!loading) {
+      setSlowHint(false);
+      return;
+    }
+    const t = setTimeout(() => setSlowHint(true), 8000);
+    return () => clearTimeout(t);
+  }, [loading]);
 
   const fetchRoutine = useCallback(async (body: Record<string, unknown>) => {
     setLoading(true);
@@ -51,8 +81,18 @@ export function YogaSession() {
   const handleStartOver = useCallback(() => {
     setResult(null);
     setError(null);
+    setLastBody(null);
+    setIntakeInitial(null);
     setPhase("disclaimer");
   }, []);
+
+  const handleEditSelections = useCallback(() => {
+    const parsed = parseIntakeFromBody(lastBody);
+    setIntakeInitial(parsed);
+    setResult(null);
+    setError(null);
+    setPhase("intake");
+  }, [lastBody]);
 
   return (
     <div className="mx-auto flex max-w-lg flex-col gap-6 px-4 py-8">
@@ -69,7 +109,12 @@ export function YogaSession() {
       )}
 
       {phase === "intake" && (
-        <IntakeFlow onSubmitIntake={fetchRoutine} isLoading={loading} />
+        <IntakeFlow
+          onSubmitIntake={fetchRoutine}
+          isLoading={loading}
+          initialState={intakeInitial ?? undefined}
+          showSlowLoadingHint={slowHint}
+        />
       )}
 
       {error && (
@@ -82,7 +127,12 @@ export function YogaSession() {
       )}
 
       {phase === "result" && result && (
-        <RoutineResult response={result} onRetry={handleRetry} onStartOver={handleStartOver} />
+        <RoutineResult
+          response={result}
+          onRetry={handleRetry}
+          onStartOver={handleStartOver}
+          onEditSelections={handleEditSelections}
+        />
       )}
     </div>
   );

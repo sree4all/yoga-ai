@@ -1,4 +1,4 @@
-/** Domain types aligned with specs/001-yoga-ai-mvp/data-model.md */
+/** Domain types aligned with specs (MVP2: multi-select intake). */
 
 export type Intensity = "mild" | "moderate" | "severe";
 
@@ -23,8 +23,9 @@ export type SafetyPath = "safe" | "restricted";
 export interface IntakeSession {
   sessionId: string;
   disclaimerAcknowledged: boolean;
-  discomfortType: DiscomfortType | null;
-  bodyRegion: BodyRegion | null;
+  /** Multi-select (MVP2) */
+  discomfortTypes: DiscomfortType[];
+  bodyRegions: BodyRegion[];
   intensity: Intensity | null;
   optionalNote: string;
 }
@@ -36,11 +37,16 @@ export interface SafetyEvaluation {
 }
 
 export interface DiscomfortProfile {
-  discomfortType: DiscomfortType;
-  bodyRegion: BodyRegion;
+  discomfortTypes: DiscomfortType[];
+  bodyRegions: BodyRegion[];
   intensity: Intensity;
   /** Key into static knowledge module */
   knowledgeKey: string;
+}
+
+export interface StepMedia {
+  imageUrl: string;
+  videoLabel: string;
 }
 
 export interface PoseStep {
@@ -59,4 +65,9 @@ export interface KnowledgeEntry {
   sequence: PoseStep[];
   posesToAvoid: string[];
   breathingFallback: BreathingScript;
+}
+
+export interface YogaStyleBlock {
+  category: string;
+  rationale: string;
 }

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yoga-ai.local/contracts/mvp2/routine-request.schema.json",
+  "title": "RoutineRequest (MVP2)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["disclaimerAcknowledged", "discomfortTypes", "bodyRegions", "intensity"],
+  "properties": {
+    "disclaimerAcknowledged": { "type": "boolean", "const": true },
+    "discomfortTypes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["stress", "tension", "stiffness", "fatigue", "other"]
+      }
+    },
+    "bodyRegions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["neck", "shoulders", "back", "hips", "whole_body", "other"]
+      }
+    },
+    "intensity": { "type": "string", "enum": ["mild", "moderate", "severe"] },
+    "optionalNote": { "type": "string", "maxLength": 500 }
+  }
+}

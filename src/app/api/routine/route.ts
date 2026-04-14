@@ -9,10 +9,17 @@ import {
   resolveRoutineGenerationBackend,
 } from "@/lib/gen/orchestrator";
 import { validateRoutineAgainstAvoidList } from "@/lib/knowledge/validate-routine";
-import type { DiscomfortType, BodyRegion } from "@/lib/types/intake";
+import type { BodyRegion } from "@/lib/types/intake";
 import { API_RESPONSE_DISCLAIMER } from "@/lib/copy/disclaimer";
 
 export const runtime = "nodejs";
+
+/** Pick a single region for restricted breathing scripts when multiple are selected. */
+function primaryRegionForRestricted(bodyRegions: BodyRegion[]): string {
+  if (bodyRegions.includes("neck")) return "neck";
+  if (bodyRegions.includes("shoulders")) return "shoulders";
+  return bodyRegions[0] ?? "whole_body";
+}
 
 function restrictedBreathingForRegion(bodyRegion: string) {
   if (bodyRegion === "neck" || bodyRegion === "shoulders") {
@@ -23,8 +30,8 @@ function restrictedBreathingForRegion(bodyRegion: string) {
 
 function timeoutMs(): number {
   const raw = process.env.ROUTINE_GEN_TIMEOUT_MS;
-  const n = raw ? parseInt(raw, 10) : 25000;
-  return Number.isFinite(n) && n > 0 ? n : 25000;
+  const n = raw ? parseInt(raw, 10) : 30_000;
+  return Number.isFinite(n) && n > 0 ? n : 30_000;
 }
 
 function postJson(body: unknown, init?: ResponseInit) {
@@ -42,7 +49,7 @@ function postJson(body: unknown, init?: ResponseInit) {
   return NextResponse.json(body, { ...init, headers });
 }
 
-/** Searchable in Vercel Runtime Logs (request exports do not include stdout). */
+/** Searchable in Vercel Runtime Logs — no raw intake payloads (constitution P4). */
 function logGenerationFailure(err: unknown) {
   const e = err instanceof Error ? err : new Error(String(err));
   const aborted =
@@ -58,7 +65,6 @@ function logGenerationFailure(err: unknown) {
       aborted,
     }),
   );
-  console.error("[routine] generation failed:", err);
 }
 
 export async function POST(req: Request) {
@@ -84,7 +90,8 @@ export async function POST(req: Request) {
   });
 
   if (safety.path === "restricted") {
-    const breath = restrictedBreathingForRegion(body.bodyRegion);
+    const primary = primaryRegionForRestricted(body.bodyRegions);
+    const breath = restrictedBreathingForRegion(primary);
     const response = {
       kind: "restricted" as const,
       disclaimer: API_RESPONSE_DISCLAIMER,
@@ -102,8 +109,8 @@ export async function POST(req: Request) {
   }
 
   const profile = buildDiscomfortProfile(
-    body.discomfortType as DiscomfortType,
-    body.bodyRegion as BodyRegion,
+    body.discomfortTypes,
+    body.bodyRegions,
     body.intensity,
   );
   const entry = KNOWLEDGE_ENTRIES[profile.knowledgeKey];
@@ -135,6 +142,7 @@ export async function POST(req: Request) {
       routine: {
         title: generated.title,
         totalDurationMinutes: generated.totalDurationMinutes,
+        yogaStyle: generated.yogaStyle,
         steps: generated.steps,
       },
     };

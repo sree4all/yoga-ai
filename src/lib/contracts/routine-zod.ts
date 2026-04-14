@@ -1,10 +1,37 @@
 import { z } from "zod";
 
+const discomfortTypeEnum = z.enum([
+  "stress",
+  "tension",
+  "stiffness",
+  "fatigue",
+  "other",
+]);
+
+const bodyRegionEnum = z.enum([
+  "neck",
+  "shoulders",
+  "back",
+  "hips",
+  "whole_body",
+  "other",
+]);
+
+function uniqueNonEmptyArray<T extends z.ZodTypeAny>(item: T, label: string) {
+  return z
+    .array(item)
+    .min(1, `${label} requires at least one selection`)
+    .refine(
+      (arr) => new Set(arr).size === arr.length,
+      `${label} must not contain duplicates`,
+    );
+}
+
 export const routineRequestSchema = z
   .object({
     disclaimerAcknowledged: z.literal(true),
-    discomfortType: z.string().min(1),
-    bodyRegion: z.string().min(1),
+    discomfortTypes: uniqueNonEmptyArray(discomfortTypeEnum, "discomfortTypes"),
+    bodyRegions: uniqueNonEmptyArray(bodyRegionEnum, "bodyRegions"),
     intensity: z.enum(["mild", "moderate", "severe"]),
     optionalNote: z.string().max(500).optional(),
   })
@@ -19,11 +46,26 @@ const breathingStepSchema = z
   })
   .strict();
 
+const stepMediaSchema = z
+  .object({
+    imageUrl: z.string().min(1),
+    videoLabel: z.string().min(1),
+  })
+  .strict();
+
 const routineStepSchema = z
   .object({
     poseId: z.string(),
     instruction: z.string(),
     durationSeconds: z.number().min(0).optional(),
+    media: stepMediaSchema,
+  })
+  .strict();
+
+const yogaStyleSchema = z
+  .object({
+    category: z.string().min(1),
+    rationale: z.string().min(1),
   })
   .strict();
 
@@ -35,6 +77,7 @@ const safeRoutineSchema = z
       .object({
         title: z.string(),
         totalDurationMinutes: z.number().min(1).max(30),
+        yogaStyle: yogaStyleSchema,
         steps: z.array(routineStepSchema).min(1),
       })
       .strict(),

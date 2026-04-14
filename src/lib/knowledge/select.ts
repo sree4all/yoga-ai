@@ -6,22 +6,27 @@ import type {
 } from "@/lib/types/intake";
 
 /**
- * Map intake to a knowledge module key. Conservative defaults when unknown.
+ * Map intake to a knowledge module key. Conservative defaults when signals combine.
  */
 export function selectKnowledgeKey(
-  discomfortType: DiscomfortType,
-  bodyRegion: BodyRegion,
+  discomfortTypes: DiscomfortType[],
+  bodyRegions: BodyRegion[],
   intensity: Intensity,
 ): string {
   if (intensity === "severe") {
-    throw new Error("selectKnowledgeKey should not run for severe — safety path first");
+    throw new Error(
+      "selectKnowledgeKey should not run for severe — safety path first",
+    );
   }
 
-  if (bodyRegion === "neck" || bodyRegion === "shoulders") {
+  const regions = new Set(bodyRegions);
+  const types = new Set(discomfortTypes);
+
+  if (regions.has("neck") || regions.has("shoulders")) {
     return "neck_tension_mild";
   }
 
-  if (discomfortType === "stress" || bodyRegion === "whole_body") {
+  if (types.has("stress") || regions.has("whole_body")) {
     return "stress_whole_mild";
   }
 
@@ -29,14 +34,18 @@ export function selectKnowledgeKey(
 }
 
 export function buildDiscomfortProfile(
-  discomfortType: DiscomfortType,
-  bodyRegion: BodyRegion,
+  discomfortTypes: DiscomfortType[],
+  bodyRegions: BodyRegion[],
   intensity: Intensity,
 ): DiscomfortProfile {
-  const knowledgeKey = selectKnowledgeKey(discomfortType, bodyRegion, intensity);
+  const knowledgeKey = selectKnowledgeKey(
+    discomfortTypes,
+    bodyRegions,
+    intensity,
+  );
   return {
-    discomfortType,
-    bodyRegion,
+    discomfortTypes,
+    bodyRegions,
     intensity,
     knowledgeKey,
   };
