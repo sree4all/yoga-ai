@@ -103,7 +103,7 @@ async function callGenOrchestratorChatCompletions(
       { role: "user", content: userPrompt },
     ],
     model,
-    temperature: 0.4,
+    temperature: routineGenerationTemperature(),
     max_tokens: 4096,
   };
 
@@ -251,6 +251,16 @@ function openAiMaxCompletionTokens(): number {
   return Math.min(8192, Math.max(256, n));
 }
 
+/** Sampling temperature for routine JSON (OpenAI + GenOrchestrator). Higher → more varied wording; default a bit above legacy 0.4. */
+export function routineGenerationTemperature(): number {
+  const raw = process.env.ROUTINE_GEN_TEMPERATURE?.trim();
+  const fallback = 0.62;
+  if (!raw) return fallback;
+  const n = parseFloat(raw);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(2, Math.max(0, n));
+}
+
 async function callOpenAiJsonMode(
   systemPrompt: string,
   userPrompt: string,
@@ -266,7 +276,7 @@ async function callOpenAiJsonMode(
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
     ],
-    temperature: 0.4,
+    temperature: routineGenerationTemperature(),
   });
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {

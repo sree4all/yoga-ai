@@ -7,6 +7,7 @@ import {
   generateRoutineStructured,
   mockRoutineFromKnowledge,
   resolveRoutineGenerationBackend,
+  routineGenerationTemperature,
 } from "@/lib/gen/orchestrator";
 import { validateRoutineAgainstAvoidList } from "@/lib/knowledge/validate-routine";
 import type { BodyRegion } from "@/lib/types/intake";
@@ -180,5 +181,6 @@ export async function GET() {
     service: "yoga-ai-routine",
     generationBackend: resolveRoutineGenerationBackend(),
     routineGenTimeoutMs: timeoutMs(),
+    routineGenTemperature: routineGenerationTemperature(),
   });
 }
