@@ -17,13 +17,52 @@ const REST_POSE_ID = "savasana";
 const WARMUP_POSE_IDS = new Set(["easy_seated", "cat", "cow", "childs_pose"]);
 const COOLDOWN_POSE_IDS = new Set(["childs_pose", "bound_angle", "supine_twist", "happy_baby"]);
 const STYLE_ROTATION = ["Hatha", "Vinyasa", "Yin", "Restorative"] as const;
+const ASSET_PATH_ALIASES: Record<string, string> = {
+  "/routine-corpus/assets/yoga-easy.svg": "/routine-corpus/assets/yoga-easy-seated.svg",
+  "/routine-corpus/assets/yoga-standing-forward-fold-1.svg":
+    "/routine-corpus/assets/yoga-standing-forward-fold.svg",
+  "/routine-corpus/assets/yoga-seated-spinal-twist-1.svg":
+    "/routine-corpus/assets/yoga-seated-spinal-twist.svg",
+  "/routine-corpus/assets/yoga-seated-forward-fold-1.svg":
+    "/routine-corpus/assets/yoga-seated-forward-fold.svg",
+  "/routine-corpus/assets/yoga-bound-angle-1.svg": "/routine-corpus/assets/yoga-bound-angle.svg",
+  "/routine-corpus/assets/yoga-supine-twist-1.svg": "/routine-corpus/assets/yoga-supine-twist.svg",
+  "/routine-corpus/assets/yoga-boat-2.svg": "/routine-corpus/assets/yoga-boat.svg",
+  "/routine-corpus/assets/yoga-camel-1.svg": "/routine-corpus/assets/yoga-camel.svg",
+  "/routine-corpus/assets/yoga-goddess-1.svg": "/routine-corpus/assets/yoga-goddess.svg",
+  "/routine-corpus/assets/yoga-tree-2.svg": "/routine-corpus/assets/yoga-tree.svg",
+};
 
 function normalizeAssetPath(pathValue: string): string {
-  const normalized = pathValue
-    .replace(/\\/g, "/")
-    .replace(/-([0-9]+)\.svg$/i, ".svg")
-    .replace("yoga-easy.svg", "yoga-easy-seated.svg");
-  return normalized;
+  const normalized = pathValue.replace(/\\/g, "/");
+  return ASSET_PATH_ALIASES[normalized] ?? normalized;
+}
+
+function readablePoseName(bundle: CorpusBundle, poseId: string): string {
+  return (
+    bundle.poseAssetIndex[poseId]?.displayName ??
+    poseId
+      .split("_")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  );
+}
+
+function ensureDetailedInstruction(
+  bundle: CorpusBundle,
+  poseId: string,
+  instruction: string,
+): string {
+  const normalized = instruction.replace(/\s+/g, " ").trim();
+  const base =
+    normalized.length > 0
+      ? normalized
+      : `Move into ${readablePoseName(bundle, poseId)} with slow, steady breath.`;
+  if (base.length >= 120) return base;
+  const details = /switch|both sides|other side/i.test(base)
+    ? "Move slowly on each side with control and keep your breath smooth."
+    : "Take 2-3 slow breaths before transitioning and stay in a pain-free range.";
+  return `${base} ${details}`;
 }
 
 function localImageForPose(bundle: CorpusBundle, poseId: string): string {
@@ -44,7 +83,7 @@ function buildLocalStep(
   const label = poseId.replace(/_/g, " ");
   return {
     poseId,
-    instruction,
+    instruction: ensureDetailedInstruction(bundle, poseId, instruction),
     durationSeconds,
     media: {
       imageUrl: localImageForPose(bundle, poseId),
@@ -184,7 +223,11 @@ export function applyCorpusInstructionEnrichment(
     if (parts.length === 0) return step;
     return {
       ...step,
-      instruction: `${step.instruction.trim()} ${parts.join(" ")}`.trim(),
+      instruction: ensureDetailedInstruction(
+        bundle,
+        step.poseId,
+        `${step.instruction.trim()} ${parts.join(" ")}`.trim(),
+      ),
     };
   });
   return { ...payload, steps };
@@ -301,13 +344,20 @@ export function finalizeRoutineFlow(
   }
 
   compactedCore.push(restStep);
-  const totalSeconds = compactedCore.reduce((acc, step) => acc + (step.durationSeconds || 0), 0);
+  const withDetailedInstructions = compactedCore.map((step) => ({
+    ...step,
+    instruction: ensureDetailedInstruction(bundle, step.poseId, step.instruction),
+  }));
+  const totalSeconds = withDetailedInstructions.reduce(
+    (acc, step) => acc + (step.durationSeconds || 0),
+    0,
+  );
   const suggestedStyle = suggestYogaStyle(options?.request);
   return {
     ...payload,
     yogaStyle: suggestedStyle ?? payload.yogaStyle,
     totalDurationMinutes: Math.max(1, Math.round(totalSeconds / 60)),
-    steps: compactedCore,
+    steps: withDetailedInstructions,
   };
 }
 

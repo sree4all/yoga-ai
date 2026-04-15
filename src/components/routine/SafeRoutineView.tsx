@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import type { RoutineResponse } from "@/lib/contracts/routine-zod";
 
 const WELLNESS_MEDIA_COPY =
@@ -57,42 +57,31 @@ function friendlyPoseLabel(poseId: string): string {
 function StepPoseImage({
   poseLabel,
   imageUrl,
-  onRetry,
+  onImageError,
 }: {
   poseLabel: string;
   imageUrl: string;
-  onRetry: () => void;
+  onImageError: () => void;
 }) {
   const [failed, setFailed] = useState(false);
 
   if (failed) {
-    return (
-      <div className="flex min-h-[12rem] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-100/80 px-4 py-6 text-center">
-        <p className="text-sm text-slate-600">Could not load this image.</p>
-        <button
-          type="button"
-          onClick={() => {
-            setFailed(false);
-            onRetry();
-          }}
-          className="rounded-lg border border-slate-400 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-        >
-          Retry
-        </button>
-      </div>
-    );
+    return null;
   }
 
   /* Plain <img> avoids Next/Image optimizer for local corpus assets. */
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- external pose URLs; avoid Image optimizer
+    // eslint-disable-next-line @next/next/no-img-element -- local static image URL from corpus
     <img
       src={imageUrl}
       alt={poseLabel}
       className="h-full w-full object-cover"
       loading="lazy"
       decoding="async"
-      onError={() => setFailed(true)}
+      onError={() => {
+        setFailed(true);
+        onImageError();
+      }}
     />
   );
 }
@@ -100,11 +89,7 @@ function StepPoseImage({
 export function SafeRoutineView({ data }: Props) {
   const { routine } = data;
   const { yogaStyle } = routine;
-  const [retryKeys, setRetryKeys] = useState<Record<number, number>>({});
-
-  const bumpRetry = useCallback((i: number) => {
-    setRetryKeys((k) => ({ ...k, [i]: (k[i] ?? 0) + 1 }));
-  }, []);
+  const [hiddenImageCards, setHiddenImageCards] = useState<Record<number, boolean>>({});
 
   return (
     <article className="yoga-panel p-6">
@@ -129,9 +114,9 @@ export function SafeRoutineView({ data }: Props) {
         {routine.steps.map((s, i) => {
           const poseLabel = friendlyPoseLabel(s.poseId);
           const hasVideo = Boolean(s.media.videoUrl?.trim());
-          const showLocalImage = isLocalImageUrl(s.media.imageUrl);
+          const showLocalImage = isLocalImageUrl(s.media.imageUrl) && !hiddenImageCards[i];
           return (
-            <li key={`${s.poseId}-${i}-${retryKeys[i] ?? 0}`} className="text-slate-800">
+            <li key={`${s.poseId}-${i}`} className="text-slate-800">
               <span className="font-medium text-slate-900">{poseLabel}</span>
               {s.durationSeconds ? (
                 <span className="text-slate-500">
@@ -150,7 +135,9 @@ export function SafeRoutineView({ data }: Props) {
                       <StepPoseImage
                         poseLabel={poseLabel}
                         imageUrl={s.media.imageUrl}
-                        onRetry={() => bumpRetry(i)}
+                        onImageError={() =>
+                          setHiddenImageCards((prev) => ({ ...prev, [i]: true }))
+                        }
                       />
                     </div>
                     <p className="px-2 py-1 text-center text-xs text-slate-500">
