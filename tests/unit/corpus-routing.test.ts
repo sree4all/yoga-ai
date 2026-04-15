@@ -88,6 +88,11 @@ describe("corpus routing and constraints", () => {
     });
     const ids = out.steps.map((step) => step.poseId);
     expect(ids.filter((id) => id === "easy_seated")).toHaveLength(1);
+    expect(
+      ids.some((id) =>
+        ["warrior_1", "warrior_2", "high_lunge", "triangle", "dolphin"].includes(id),
+      ),
+    ).toBe(true);
     expect(ids[ids.length - 1]).toBe("savasana");
     expect(out.totalDurationMinutes).toBeGreaterThanOrEqual(9);
     expect(out.yogaStyle.category).toBe("Restorative");

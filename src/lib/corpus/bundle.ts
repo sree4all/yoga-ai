@@ -16,6 +16,15 @@ const HIDE_IMAGE_URL = "about:blank";
 const REST_POSE_ID = "savasana";
 const WARMUP_POSE_IDS = new Set(["easy_seated", "cat", "cow", "childs_pose"]);
 const COOLDOWN_POSE_IDS = new Set(["childs_pose", "bound_angle", "supine_twist", "happy_baby"]);
+const GENERIC_POSE_IDS = new Set([
+  "easy_seated",
+  "cat",
+  "cow",
+  "supine_twist",
+  "childs_pose",
+  "balancing_table",
+  "savasana",
+]);
 const STYLE_ROTATION = ["Hatha", "Vinyasa", "Yin", "Restorative"] as const;
 const ASSET_PATH_ALIASES: Record<string, string> = {
   "/routine-corpus/assets/yoga-easy.svg": "/routine-corpus/assets/yoga-easy-seated.svg",
@@ -238,11 +247,16 @@ export function clampRoutineToAllowedPoses(
   payload: GeneratedRoutinePayload,
   allowedPoseIds: Set<string>,
 ): GeneratedRoutinePayload {
-  const fallbackPose = allowedPoseIds.values().next().value ?? "easy_seated";
-  const steps = payload.steps.map((step) => {
+  const orderedAllowed = Array.from(allowedPoseIds);
+  const preferredFallbacks = orderedAllowed.filter((id) => !GENERIC_POSE_IDS.has(id));
+  const fallbackPool = preferredFallbacks.length > 0 ? preferredFallbacks : orderedAllowed;
+  const fallbackPose = fallbackPool[0] ?? "easy_seated";
+  const steps = payload.steps.map((step, index) => {
     if (allowedPoseIds.has(step.poseId)) return step;
     const substitute = substitutionForPoseId(bundle, step.poseId);
-    const nextPose = substitute && allowedPoseIds.has(substitute) ? substitute : fallbackPose;
+    const rotatedFallback = fallbackPool[index % fallbackPool.length] ?? fallbackPose;
+    const nextPose =
+      substitute && allowedPoseIds.has(substitute) ? substitute : rotatedFallback;
     return {
       ...step,
       poseId: nextPose,
@@ -321,17 +335,42 @@ export function finalizeRoutineFlow(
   const pool = options?.candidateRoutines ?? [];
   if (coreSeconds < targetCoreSeconds && pool.length > 0) {
     const used = new Set(compactedCore.map((step) => step.poseId));
+    const candidateSteps: Array<{
+      poseId: string;
+      durationSeconds: number;
+      cue: string;
+      score: number;
+    }> = [];
     for (const routine of pool) {
       for (const routineStep of routine.steps) {
-        if (coreSeconds >= targetCoreSeconds) break;
-        if (routineStep.poseId === REST_POSE_ID || routineStep.poseId === "shavasana") continue;
-        if (used.has(routineStep.poseId)) continue;
-        const cue = routineStep.cues[0] ?? "Move with steady breath and a comfortable range.";
-        compactedCore.push(buildLocalStep(bundle, routineStep.poseId, cue, routineStep.durationSeconds));
-        used.add(routineStep.poseId);
-        coreSeconds += routineStep.durationSeconds;
+        const poseId = routineStep.poseId;
+        if (poseId === REST_POSE_ID || poseId === "shavasana") continue;
+        if (used.has(poseId)) continue;
+        const isGeneric = GENERIC_POSE_IDS.has(poseId);
+        const isCooldown = COOLDOWN_POSE_IDS.has(poseId);
+        const score = (isGeneric ? 0 : 3) + (isCooldown ? 0 : 1);
+        candidateSteps.push({
+          poseId,
+          durationSeconds: routineStep.durationSeconds,
+          cue: routineStep.cues[0] ?? "Move with steady breath and a comfortable range.",
+          score,
+        });
       }
+    }
+    candidateSteps.sort((a, b) => b.score - a.score);
+    for (const candidate of candidateSteps) {
       if (coreSeconds >= targetCoreSeconds) break;
+      if (used.has(candidate.poseId)) continue;
+      compactedCore.push(
+        buildLocalStep(
+          bundle,
+          candidate.poseId,
+          candidate.cue,
+          candidate.durationSeconds,
+        ),
+      );
+      used.add(candidate.poseId);
+      coreSeconds += candidate.durationSeconds;
     }
   }
   if (coreSeconds < targetCoreSeconds && compactedCore.length > 0) {
