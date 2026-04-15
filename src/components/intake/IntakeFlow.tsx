@@ -1,29 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DISCOMFORT_OPTIONS,
   REGION_OPTIONS,
   INTENSITY_OPTIONS,
   buildRoutineRequestBody,
+  toggleBodyRegion,
+  toggleDiscomfortType,
   type IntakeFormState,
 } from "@/lib/intake/state";
 
 interface IntakeFlowProps {
   onSubmitIntake: (body: Record<string, unknown>) => void;
   isLoading: boolean;
+  /** When set (e.g. returning from results), pre-fill the form. */
+  initialState?: IntakeFormState | null;
+  /** True after ~8s of loading — show reassuring copy (FR-010 edge case). */
+  showSlowLoadingHint?: boolean;
 }
 
-const initial: IntakeFormState = {
-  discomfortType: "",
-  bodyRegion: "",
+const empty: IntakeFormState = {
+  discomfortTypes: [],
+  bodyRegions: [],
   intensity: "",
   optionalNote: "",
 };
 
-export function IntakeFlow({ onSubmitIntake, isLoading }: IntakeFlowProps) {
-  const [state, setState] = useState<IntakeFormState>(initial);
+export function IntakeFlow({
+  onSubmitIntake,
+  isLoading,
+  initialState,
+  showSlowLoadingHint,
+}: IntakeFlowProps) {
+  const [state, setState] = useState<IntakeFormState>(() =>
+    initialState ? { ...initialState } : { ...empty },
+  );
   const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (initialState) {
+      setState({ ...initialState });
+      setStep(0);
+    }
+  }, [initialState]);
 
   const update = (patch: Partial<IntakeFormState>) =>
     setState((s) => ({ ...s, ...patch }));
@@ -32,54 +52,80 @@ export function IntakeFlow({ onSubmitIntake, isLoading }: IntakeFlowProps) {
     <div key="dt">
       <fieldset>
         <legend className="text-base font-medium text-slate-900">
-          What best describes what you want to ease today?
+          What best describes what you want to ease today?{" "}
+          <span className="font-normal text-slate-500">(select all that apply)</span>
         </legend>
-        <div className="mt-3 grid gap-2">
+        <p id="dt-help" className="mt-1 text-sm text-slate-600">
+          Choose every sensation that fits — we will combine them for your session.
+        </p>
+        <div className="mt-3 grid gap-2" role="group" aria-describedby="dt-help">
           {DISCOMFORT_OPTIONS.map((o) => (
             <label
               key={o.value}
               className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 hover:bg-slate-50"
             >
               <input
-                type="radio"
-                name="discomfortType"
-                value={o.value}
-                checked={state.discomfortType === o.value}
-                onChange={() => update({ discomfortType: o.value })}
-                className="h-4 w-4 text-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+                type="checkbox"
+                name={`discomfort-${o.value}`}
+                checked={state.discomfortTypes.includes(o.value)}
+                onChange={() => update(toggleDiscomfortType(state, o.value))}
+                className="h-4 w-4 rounded border-slate-300 text-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
               />
               <span className="text-sm text-slate-800">{o.label}</span>
             </label>
           ))}
         </div>
+        {state.discomfortTypes.length > 0 ? (
+          <p className="mt-2 text-xs text-slate-500" aria-live="polite">
+            Selected:{" "}
+            {state.discomfortTypes
+              .map((v) => DISCOMFORT_OPTIONS.find((o) => o.value === v)?.label ?? v)
+              .join(" · ")}
+          </p>
+        ) : null}
       </fieldset>
     </div>,
     <div key="br">
       <fieldset>
-        <legend className="text-base font-medium text-slate-900">Where do you feel it most?</legend>
-        <div className="mt-3 grid gap-2">
+        <legend className="text-base font-medium text-slate-900">
+          Where do you feel it most?{" "}
+          <span className="font-normal text-slate-500">(select all that apply)</span>
+        </legend>
+        <p id="br-help" className="mt-1 text-sm text-slate-600">
+          Pick every area you want this practice to address.
+        </p>
+        <div className="mt-3 grid gap-2" role="group" aria-describedby="br-help">
           {REGION_OPTIONS.map((o) => (
             <label
               key={o.value}
               className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 hover:bg-slate-50"
             >
               <input
-                type="radio"
-                name="bodyRegion"
-                value={o.value}
-                checked={state.bodyRegion === o.value}
-                onChange={() => update({ bodyRegion: o.value })}
-                className="h-4 w-4 text-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+                type="checkbox"
+                name={`region-${o.value}`}
+                checked={state.bodyRegions.includes(o.value)}
+                onChange={() => update(toggleBodyRegion(state, o.value))}
+                className="h-4 w-4 rounded border-slate-300 text-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
               />
               <span className="text-sm text-slate-800">{o.label}</span>
             </label>
           ))}
         </div>
+        {state.bodyRegions.length > 0 ? (
+          <p className="mt-2 text-xs text-slate-500" aria-live="polite">
+            Selected:{" "}
+            {state.bodyRegions
+              .map((v) => REGION_OPTIONS.find((o) => o.value === v)?.label ?? v)
+              .join(" · ")}
+          </p>
+        ) : null}
       </fieldset>
     </div>,
     <div key="int">
       <fieldset>
-        <legend className="text-base font-medium text-slate-900">How intense does it feel right now?</legend>
+        <legend className="text-base font-medium text-slate-900">
+          How intense does it feel right now?
+        </legend>
         <p id="int-help" className="mt-1 text-sm text-slate-600">
           If you choose <strong>Severe</strong>, we will only suggest gentle breathing and rest.
         </p>
@@ -121,8 +167,8 @@ export function IntakeFlow({ onSubmitIntake, isLoading }: IntakeFlowProps) {
   ];
 
   const canNext = () => {
-    if (step === 0) return !!state.discomfortType;
-    if (step === 1) return !!state.bodyRegion;
+    if (step === 0) return state.discomfortTypes.length >= 1;
+    if (step === 1) return state.bodyRegions.length >= 1;
     if (step === 2) return !!state.intensity;
     return true;
   };
@@ -133,11 +179,23 @@ export function IntakeFlow({ onSubmitIntake, isLoading }: IntakeFlowProps) {
   };
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      aria-live="polite"
+    >
       <h2 className="text-lg font-semibold text-slate-900">Quick intake</h2>
       <p className="mt-1 text-sm text-slate-600">
         Step {step + 1} of {steps.length}
       </p>
+      {showSlowLoadingHint && isLoading ? (
+        <p
+          className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900"
+          role="status"
+        >
+          Still preparing your practice — this can take up to half a minute. You can stay on this
+          page.
+        </p>
+      ) : null}
       <div className="mt-4">{steps[step]}</div>
       <div className="mt-6 flex flex-wrap gap-3">
         {step > 0 && (

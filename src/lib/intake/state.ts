@@ -1,15 +1,15 @@
 import type { BodyRegion, DiscomfortType, Intensity } from "@/lib/types/intake";
 
 export type IntakeStep =
-  | "discomfortType"
-  | "bodyRegion"
+  | "discomfortTypes"
+  | "bodyRegions"
   | "intensity"
   | "optionalNote"
   | "review";
 
 export interface IntakeFormState {
-  discomfortType: DiscomfortType | "";
-  bodyRegion: BodyRegion | "";
+  discomfortTypes: DiscomfortType[];
+  bodyRegions: BodyRegion[];
   intensity: Intensity | "";
   optionalNote: string;
 }
@@ -37,20 +37,41 @@ export const INTENSITY_OPTIONS: { value: Intensity; label: string }[] = [
   { value: "severe", label: "Severe" },
 ];
 
+function toggleInList<T extends string>(list: T[], value: T): T[] {
+  if (list.includes(value)) {
+    return list.filter((x) => x !== value);
+  }
+  return [...list, value];
+}
+
+export function toggleDiscomfortType(
+  state: IntakeFormState,
+  value: DiscomfortType,
+): Partial<IntakeFormState> {
+  return { discomfortTypes: toggleInList(state.discomfortTypes, value) };
+}
+
+export function toggleBodyRegion(
+  state: IntakeFormState,
+  value: BodyRegion,
+): Partial<IntakeFormState> {
+  return { bodyRegions: toggleInList(state.bodyRegions, value) };
+}
+
 export function buildRoutineRequestBody(
   state: IntakeFormState,
 ): Record<string, unknown> | null {
   if (
-    !state.discomfortType ||
-    !state.bodyRegion ||
+    state.discomfortTypes.length === 0 ||
+    state.bodyRegions.length === 0 ||
     !state.intensity
   ) {
     return null;
   }
   return {
     disclaimerAcknowledged: true,
-    discomfortType: state.discomfortType,
-    bodyRegion: state.bodyRegion,
+    discomfortTypes: state.discomfortTypes,
+    bodyRegions: state.bodyRegions,
     intensity: state.intensity,
     ...(state.optionalNote.trim()
       ? { optionalNote: state.optionalNote.trim() }

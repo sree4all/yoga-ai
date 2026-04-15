@@ -37,3 +37,7 @@ next-env.d.ts
 
 # Vitest
 .vitest/
+
+# Optional local YTT / curriculum (zip, PDF, exports) — not tracked; see content/ytt-source/.gitkeep
+content/ytt-source/*
+!content/ytt-source/.gitkeep

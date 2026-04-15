@@ -2,10 +2,23 @@ import type { KnowledgeEntry } from "@/lib/types/intake";
 import type { RoutineRequest } from "@/lib/contracts/routine-zod";
 import { composeOrchestratorPrompts } from "@/lib/yoga/compose-context";
 
+export interface StepMedia {
+  imageUrl: string;
+  videoLabel: string;
+}
+
+export interface GeneratedRoutineStep {
+  poseId: string;
+  instruction: string;
+  durationSeconds: number;
+  media: StepMedia;
+}
+
 export interface GeneratedRoutinePayload {
   title: string;
   totalDurationMinutes: number;
-  steps: { poseId: string; instruction: string; durationSeconds: number }[];
+  yogaStyle: { category: string; rationale: string };
+  steps: GeneratedRoutineStep[];
 }
 
 /**
@@ -90,7 +103,7 @@ async function callGenOrchestratorChatCompletions(
       { role: "user", content: userPrompt },
     ],
     model,
-    temperature: 0.4,
+    temperature: routineGenerationTemperature(),
     max_tokens: 4096,
   };
 
@@ -137,6 +150,14 @@ async function callGenOrchestratorChatCompletions(
   return parseRoutinePayload(parsed);
 }
 
+function defaultMediaForPose(poseId: string): StepMedia {
+  const label = poseId.replace(/_/g, " ");
+  return {
+    imageUrl: `https://picsum.photos/seed/${encodeURIComponent(poseId)}/480/320`,
+    videoLabel: `YouTube search: “${label}” yoga pose (gentle)`,
+  };
+}
+
 function parseRoutinePayload(data: unknown): GeneratedRoutinePayload {
   const obj = data as Record<string, unknown>;
   const inner = (obj.routine ?? obj) as Record<string, unknown>;
@@ -146,15 +167,36 @@ function parseRoutinePayload(data: unknown): GeneratedRoutinePayload {
   if (!Array.isArray(stepsRaw)) {
     throw new Error("Invalid orchestrator payload: steps");
   }
+
+  const ys = inner.yogaStyle as Record<string, unknown> | undefined;
+  const yogaStyle = {
+    category: String(ys?.category ?? "Hatha"),
+    rationale: String(
+      ys?.rationale ??
+        "A steady, approachable pace matched to your selected focus areas.",
+    ),
+  };
+
   const steps = stepsRaw.map((s) => {
     const step = s as Record<string, unknown>;
+    const poseId = String(step.poseId ?? "pose");
+    const mediaRaw = step.media as Record<string, unknown> | undefined;
+    const media: StepMedia = {
+      imageUrl: String(
+        mediaRaw?.imageUrl ?? defaultMediaForPose(poseId).imageUrl,
+      ),
+      videoLabel: String(
+        mediaRaw?.videoLabel ?? defaultMediaForPose(poseId).videoLabel,
+      ),
+    };
     return {
-      poseId: String(step.poseId ?? "pose"),
+      poseId,
       instruction: String(step.instruction ?? ""),
       durationSeconds: Number(step.durationSeconds ?? 60),
+      media,
     };
   });
-  return { title, totalDurationMinutes, steps };
+  return { title, totalDurationMinutes, yogaStyle, steps };
 }
 
 function openAiMaxAttempts(): number {
@@ -209,6 +251,16 @@ function openAiMaxCompletionTokens(): number {
   return Math.min(8192, Math.max(256, n));
 }
 
+/** Sampling temperature for routine JSON (OpenAI + GenOrchestrator). Higher → more varied wording; default a bit above legacy 0.4. */
+export function routineGenerationTemperature(): number {
+  const raw = process.env.ROUTINE_GEN_TEMPERATURE?.trim();
+  const fallback = 0.62;
+  if (!raw) return fallback;
+  const n = parseFloat(raw);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(2, Math.max(0, n));
+}
+
 async function callOpenAiJsonMode(
   systemPrompt: string,
   userPrompt: string,
@@ -224,7 +276,7 @@ async function callOpenAiJsonMode(
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
     ],
-    temperature: 0.4,
+    temperature: routineGenerationTemperature(),
   });
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -299,18 +351,24 @@ function parseModelJsonContent(content: string): unknown {
   throw new Error("Model content is not valid JSON");
 }
 
-/** Deterministic mock — valid JSON shape, ~10 minutes total duration. */
+/** Deterministic mock — valid JSON shape, ~10 minutes total duration, MVP2 media + yoga style. */
 export function mockRoutineFromKnowledge(entry: KnowledgeEntry): GeneratedRoutinePayload {
-  const steps = entry.sequence.map((s) => ({
+  const steps: GeneratedRoutineStep[] = entry.sequence.map((s) => ({
     poseId: s.poseId,
     instruction: s.cues.join(" "),
     durationSeconds: s.durationSeconds,
+    media: defaultMediaForPose(s.poseId),
   }));
   const totalSeconds = steps.reduce((a, b) => a + b.durationSeconds, 0);
   const totalDurationMinutes = Math.max(1, Math.round(totalSeconds / 60));
   return {
     title: entry.title,
     totalDurationMinutes,
+    yogaStyle: {
+      category: "Hatha",
+      rationale:
+        "Slow, steady transitions and clear cues — suitable for the knowledge-base sequence below.",
+    },
     steps,
   };
 }
