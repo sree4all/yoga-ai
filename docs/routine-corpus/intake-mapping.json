@@ -1,0 +1,16 @@
+{
+  "region:neck": ["neck_shoulders", "stress_relief"],
+  "region:shoulders": ["neck_shoulders", "upper_back"],
+  "region:back": ["back_mobility", "full_body_gentle"],
+  "region:hips": ["hip_opening", "lower_body_mobility"],
+  "region:whole_body": ["full_body_gentle", "stress_relief"],
+  "region:other": ["full_body_gentle"],
+  "discomfort:stress": ["stress_relief", "full_body_gentle"],
+  "discomfort:tension": ["neck_shoulders", "hip_opening", "back_mobility"],
+  "discomfort:stiffness": ["back_mobility", "hip_opening", "lower_body_mobility"],
+  "discomfort:fatigue": ["energy_balance", "core_balance"],
+  "discomfort:other": ["full_body_gentle"],
+  "intensity:mild": ["restorative_flow"],
+  "intensity:moderate": ["core_balance", "lower_body_mobility"],
+  "intensity:severe": ["restorative_flow"]
+}

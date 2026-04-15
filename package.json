@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:corpus": "node --experimental-strip-types scripts/build-corpus-bundle.mts",
+    "validate:corpus": "node --experimental-strip-types scripts/validate-corpus.mts",
+    "sync:pose-assets": "node --experimental-strip-types scripts/sync-pose-assets.mts"
   },
   "dependencies": {
     "next": "15.2.8",

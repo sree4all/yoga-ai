@@ -4,6 +4,10 @@ import type { RoutineRequest } from "@/lib/contracts/routine-zod";
 export interface ComposePromptOptions {
   /** Per-request token so completions vary across sessions (MVP3). */
   diversityNonce?: string;
+  /** MVP4 constrained generation context. */
+  constrainedPoseIds?: string[];
+  catalogTags?: string[];
+  enrichmentSnippets?: string[];
 }
 
 /**
@@ -62,6 +66,21 @@ Rules:
     options?.diversityNonce != null && options.diversityNonce.length > 0
       ? `\n- **Session diversity id (vary wording vs other runs; do not repeat boilerplate):** ${options.diversityNonce}`
       : "";
+  const constrainedPosesLine =
+    options?.constrainedPoseIds && options.constrainedPoseIds.length > 0
+      ? `\n- **Allowed pose ids (strict list; do not invent others):** ${options.constrainedPoseIds.join(", ")}`
+      : "";
+  const tagsLine =
+    options?.catalogTags && options.catalogTags.length > 0
+      ? `\n- **Catalog focus tags for this request:** ${options.catalogTags.join(", ")}`
+      : "";
+  const snippetLine =
+    options?.enrichmentSnippets && options.enrichmentSnippets.length > 0
+      ? `\n- **Approved optional enrichment lines (English-only, secular):**\n${options.enrichmentSnippets
+          .slice(0, 8)
+          .map((s, i) => `  ${i + 1}. ${s}`)
+          .join("\n")}`
+      : "";
 
   const userPrompt = `Intake (non-medical self-report) — **use ALL items** in each list; they form a combined picture:
 - Discomfort types selected: ${discomfortList}
@@ -75,7 +94,7 @@ ${sequenceSummary}
 
 poses_to_avoid: ${avoid}
 
-Produce JSON for the final user-facing routine. Tie every section to this specific combination of types and regions — not a generic routine.`;
+Produce JSON for the final user-facing routine. Tie every section to this specific combination of types and regions — not a generic routine.${constrainedPosesLine}${tagsLine}${snippetLine}`;
 
   return { systemPrompt, userPrompt };
 }

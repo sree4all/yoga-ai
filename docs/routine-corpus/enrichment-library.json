@@ -1,0 +1,34 @@
+[
+  {
+    "id": "breath_box_4_4",
+    "type": "breath",
+    "text": "Breathe in for 4 and out for 4 with a soft jaw."
+  },
+  {
+    "id": "mindful_notice",
+    "type": "mindfulness",
+    "text": "Notice one point of steady contact with the mat."
+  },
+  {
+    "id": "quote_bks_iyengar",
+    "type": "quote",
+    "text": "Yoga does not just change the way we see things, it transforms the person who sees.",
+    "attribution": "B. K. S. Iyengar"
+  },
+  {
+    "id": "sanskrit_tadasana",
+    "type": "sanskrit_gloss",
+    "text": "Tadasana is commonly translated as Mountain Pose."
+  },
+  {
+    "id": "breath_long_exhale",
+    "type": "breath",
+    "text": "Keep your exhale slightly longer than your inhale for a calmer pace."
+  },
+  {
+    "id": "quote_desikachar",
+    "type": "quote",
+    "text": "The success of yoga does not lie in the ability to perform postures but in how it changes us.",
+    "attribution": "T. K. V. Desikachar"
+  }
+]

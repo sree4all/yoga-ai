@@ -1,0 +1,1330 @@
+{
+  "bundleVersion": "1.0.0",
+  "schemaVersion": 1,
+  "routines": [
+    {
+      "id": "stress_reset_1",
+      "title": "Stress Reset Gentle Flow",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "stress_relief",
+        "full_body_gentle",
+        "restorative_flow"
+      ],
+      "enrichmentRefs": [
+        "breath_box_4_4",
+        "mindful_notice",
+        "quote_desikachar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Sit tall and settle your breath."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Round the spine slowly on each exhale."
+          ]
+        },
+        {
+          "poseId": "cow",
+          "durationSeconds": 60,
+          "cues": [
+            "Open the chest gently on each inhale."
+          ]
+        },
+        {
+          "poseId": "balancing_table",
+          "durationSeconds": 60,
+          "cues": [
+            "Reach opposite arm and leg with control."
+          ]
+        },
+        {
+          "poseId": "childs_pose",
+          "durationSeconds": 60,
+          "cues": [
+            "Rest and soften your jaw."
+          ]
+        },
+        {
+          "poseId": "downward_facing_dog",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen your spine with easy knees."
+          ]
+        },
+        {
+          "poseId": "standing_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Release the neck and shoulders."
+          ]
+        },
+        {
+          "poseId": "bound_angle",
+          "durationSeconds": 60,
+          "cues": [
+            "Stay upright and breathe into the hips."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Rotate softly and keep both shoulders grounded."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Relax your lower back and breathe slowly."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neck_release_1",
+      "title": "Neck and Shoulder Ease",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "neck_shoulders",
+        "upper_back",
+        "restorative_flow"
+      ],
+      "enrichmentRefs": [
+        "breath_long_exhale",
+        "quote_bks_iyengar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Sit calmly and drop your shoulders."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Move slowly through spinal flexion."
+          ]
+        },
+        {
+          "poseId": "cow",
+          "durationSeconds": 60,
+          "cues": [
+            "Lift the chest without forcing range."
+          ]
+        },
+        {
+          "poseId": "balancing_table",
+          "durationSeconds": 60,
+          "cues": [
+            "Hold steady and keep neck long."
+          ]
+        },
+        {
+          "poseId": "dolphin",
+          "durationSeconds": 60,
+          "cues": [
+            "Press forearms down and widen upper back."
+          ]
+        },
+        {
+          "poseId": "childs_pose",
+          "durationSeconds": 60,
+          "cues": [
+            "Rest your forehead and breathe slowly."
+          ]
+        },
+        {
+          "poseId": "seated_spinal_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Twist from your ribs, not neck strain."
+          ]
+        },
+        {
+          "poseId": "bound_angle",
+          "durationSeconds": 60,
+          "cues": [
+            "Open through collarbones while seated tall."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Relax shoulders evenly into mat."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Finish with soft, even breaths."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neck_release_2",
+      "title": "Upper Body Unwind",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "neck_shoulders",
+        "stress_relief",
+        "upper_back"
+      ],
+      "enrichmentRefs": [
+        "mindful_notice",
+        "quote_desikachar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Begin in an upright comfortable seat."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Exhale to round and release the back body."
+          ]
+        },
+        {
+          "poseId": "cow",
+          "durationSeconds": 60,
+          "cues": [
+            "Inhale to gently broaden your chest."
+          ]
+        },
+        {
+          "poseId": "childs_pose",
+          "durationSeconds": 60,
+          "cues": [
+            "Pause and soften your neck."
+          ]
+        },
+        {
+          "poseId": "downward_facing_dog",
+          "durationSeconds": 60,
+          "cues": [
+            "Pedal feet and keep shoulders spacious."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Lift through the spine and relax jaw."
+          ]
+        },
+        {
+          "poseId": "standing_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Let the crown of head feel heavy."
+          ]
+        },
+        {
+          "poseId": "seated_spinal_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Keep neck neutral while rotating."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Ease each side with slow breathing."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Close with a quiet and steady exhale."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hip_opening_1",
+      "title": "Gentle Hip Opening",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "hip_opening",
+        "lower_body_mobility",
+        "full_body_gentle"
+      ],
+      "enrichmentRefs": [
+        "breath_box_4_4",
+        "sanskrit_tadasana"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Settle and lengthen the spine."
+          ]
+        },
+        {
+          "poseId": "bound_angle",
+          "durationSeconds": 60,
+          "cues": [
+            "Tip pelvis slightly forward to open hips."
+          ]
+        },
+        {
+          "poseId": "lizard",
+          "durationSeconds": 60,
+          "cues": [
+            "Lower hands and breathe into front hip."
+          ]
+        },
+        {
+          "poseId": "pigeon",
+          "durationSeconds": 60,
+          "cues": [
+            "Stay lifted and avoid knee strain."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Press through back heel strongly."
+          ]
+        },
+        {
+          "poseId": "warrior_2",
+          "durationSeconds": 60,
+          "cues": [
+            "Track front knee over middle toes."
+          ]
+        },
+        {
+          "poseId": "triangle",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen both sides of the torso."
+          ]
+        },
+        {
+          "poseId": "standing_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Release back of legs with soft knees."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Gentle twist to neutralize hips."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Breathe wide into the lower back."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hip_opening_2",
+      "title": "Hips and Legs Mobility",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "hip_opening",
+        "lower_body_mobility"
+      ],
+      "enrichmentRefs": [
+        "mindful_notice",
+        "quote_bks_iyengar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Take a grounding breath before movement."
+          ]
+        },
+        {
+          "poseId": "bound_angle",
+          "durationSeconds": 60,
+          "cues": [
+            "Sit tall and broaden through chest."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Sink hips while keeping front knee stable."
+          ]
+        },
+        {
+          "poseId": "warrior_1",
+          "durationSeconds": 60,
+          "cues": [
+            "Lift arms and keep shoulders soft."
+          ]
+        },
+        {
+          "poseId": "reverse_warrior",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen side body with easy breath."
+          ]
+        },
+        {
+          "poseId": "triangle",
+          "durationSeconds": 60,
+          "cues": [
+            "Stack shoulders as you hinge from hips."
+          ]
+        },
+        {
+          "poseId": "lizard",
+          "durationSeconds": 60,
+          "cues": [
+            "Stay low and steady in front hip."
+          ]
+        },
+        {
+          "poseId": "pigeon",
+          "durationSeconds": 60,
+          "cues": [
+            "Use support if needed under hip."
+          ]
+        },
+        {
+          "poseId": "seated_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen spine before folding forward."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Finish by resetting your lower back."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "back_mobility_1",
+      "title": "Back Mobility Rebalance",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "back_mobility",
+        "full_body_gentle",
+        "upper_back"
+      ],
+      "enrichmentRefs": [
+        "breath_long_exhale",
+        "quote_desikachar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Sit upright and breathe into side ribs."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Move slowly from tailbone to crown."
+          ]
+        },
+        {
+          "poseId": "cow",
+          "durationSeconds": 60,
+          "cues": [
+            "Keep elbows soft and chest open."
+          ]
+        },
+        {
+          "poseId": "balancing_table",
+          "durationSeconds": 60,
+          "cues": [
+            "Stabilize your core through reach."
+          ]
+        },
+        {
+          "poseId": "locust",
+          "durationSeconds": 60,
+          "cues": [
+            "Lift chest with broad collarbones."
+          ]
+        },
+        {
+          "poseId": "camel",
+          "durationSeconds": 60,
+          "cues": [
+            "Keep thighs vertical and neck neutral."
+          ]
+        },
+        {
+          "poseId": "childs_pose",
+          "durationSeconds": 60,
+          "cues": [
+            "Counterpose and soften low back."
+          ]
+        },
+        {
+          "poseId": "seated_spinal_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Rotate gently with each exhale."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Release both sides with patience."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Settle your breathing before finishing."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "core_balance_1",
+      "title": "Core Balance Sequence",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "core_balance",
+        "full_body_gentle",
+        "energy_balance"
+      ],
+      "enrichmentRefs": [
+        "breath_box_4_4",
+        "quote_bks_iyengar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Connect breath to low belly support."
+          ]
+        },
+        {
+          "poseId": "balancing_table",
+          "durationSeconds": 60,
+          "cues": [
+            "Reach long without collapsing spine."
+          ]
+        },
+        {
+          "poseId": "boat",
+          "durationSeconds": 60,
+          "cues": [
+            "Lift chest and keep neck relaxed."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Draw ribs in and stay steady."
+          ]
+        },
+        {
+          "poseId": "warrior_1",
+          "durationSeconds": 60,
+          "cues": [
+            "Hold centerline as arms lift overhead."
+          ]
+        },
+        {
+          "poseId": "warrior_2",
+          "durationSeconds": 60,
+          "cues": [
+            "Maintain strong and even stance."
+          ]
+        },
+        {
+          "poseId": "triangle",
+          "durationSeconds": 60,
+          "cues": [
+            "Engage side waist in the hinge."
+          ]
+        },
+        {
+          "poseId": "locust",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen from crown to toes."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Release your core before final rest."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "End with calm, deep breathing."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lower_body_mobility_1",
+      "title": "Lower Body Mobility",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "lower_body_mobility",
+        "energy_balance"
+      ],
+      "enrichmentRefs": [
+        "breath_long_exhale",
+        "mindful_notice"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Center attention on smooth inhales."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Track knee safely and keep hips level."
+          ]
+        },
+        {
+          "poseId": "warrior_1",
+          "durationSeconds": 60,
+          "cues": [
+            "Root the back foot and rise tall."
+          ]
+        },
+        {
+          "poseId": "warrior_2",
+          "durationSeconds": 60,
+          "cues": [
+            "Stay broad across shoulders and hips."
+          ]
+        },
+        {
+          "poseId": "reverse_warrior",
+          "durationSeconds": 60,
+          "cues": [
+            "Arc gently with stable lower body."
+          ]
+        },
+        {
+          "poseId": "half_moon",
+          "durationSeconds": 60,
+          "cues": [
+            "Balance from leg strength, not speed."
+          ]
+        },
+        {
+          "poseId": "triangle",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen through both side waists."
+          ]
+        },
+        {
+          "poseId": "standing_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Melt through hamstrings with soft knees."
+          ]
+        },
+        {
+          "poseId": "bound_angle",
+          "durationSeconds": 60,
+          "cues": [
+            "Open inner thighs with gentle breath."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Reset and release before finish."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full_body_gentle_1",
+      "title": "Full Body Gentle Builder",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "full_body_gentle",
+        "stress_relief"
+      ],
+      "enrichmentRefs": [
+        "quote_desikachar",
+        "mindful_notice"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Set intention with one steady inhale."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Mobilize spine in a smooth rhythm."
+          ]
+        },
+        {
+          "poseId": "cow",
+          "durationSeconds": 60,
+          "cues": [
+            "Expand front body gently."
+          ]
+        },
+        {
+          "poseId": "downward_facing_dog",
+          "durationSeconds": 60,
+          "cues": [
+            "Create length from hands to hips."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Stack joints and keep breath calm."
+          ]
+        },
+        {
+          "poseId": "warrior_2",
+          "durationSeconds": 60,
+          "cues": [
+            "Balance effort between both legs."
+          ]
+        },
+        {
+          "poseId": "triangle",
+          "durationSeconds": 60,
+          "cues": [
+            "Reach long through top arm."
+          ]
+        },
+        {
+          "poseId": "bound_angle",
+          "durationSeconds": 60,
+          "cues": [
+            "Transition to floor with control."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Twist softly side to side."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Complete with quiet nasal breathing."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "restorative_flow_1",
+      "title": "Restorative Wind Down",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "restorative_flow",
+        "stress_relief",
+        "full_body_gentle"
+      ],
+      "enrichmentRefs": [
+        "breath_box_4_4",
+        "quote_bks_iyengar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Relax face muscles and breathe gently."
+          ]
+        },
+        {
+          "poseId": "bound_angle",
+          "durationSeconds": 60,
+          "cues": [
+            "Sit comfortably and open through hips."
+          ]
+        },
+        {
+          "poseId": "childs_pose",
+          "durationSeconds": 60,
+          "cues": [
+            "Rest and release effort."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Move small and smooth with breath."
+          ]
+        },
+        {
+          "poseId": "cow",
+          "durationSeconds": 60,
+          "cues": [
+            "Keep motion unforced and calm."
+          ]
+        },
+        {
+          "poseId": "seated_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen then fold lightly."
+          ]
+        },
+        {
+          "poseId": "seated_spinal_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Rotate softly on each exhale."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Ease both sides and stay grounded."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Soften low back and breathe wide."
+          ]
+        },
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Close with one minute of quiet breath."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "energy_balance_1",
+      "title": "Energy Balance Flow",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "energy_balance",
+        "full_body_gentle",
+        "core_balance"
+      ],
+      "enrichmentRefs": [
+        "mindful_notice",
+        "quote_desikachar"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Begin with upright, alert posture."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Warm spine before standing work."
+          ]
+        },
+        {
+          "poseId": "downward_facing_dog",
+          "durationSeconds": 60,
+          "cues": [
+            "Press through palms and lengthen."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Lift through center and steady breath."
+          ]
+        },
+        {
+          "poseId": "warrior_1",
+          "durationSeconds": 60,
+          "cues": [
+            "Stay grounded through both feet."
+          ]
+        },
+        {
+          "poseId": "tree",
+          "durationSeconds": 60,
+          "cues": [
+            "Find one focal point and balance."
+          ]
+        },
+        {
+          "poseId": "boat",
+          "durationSeconds": 60,
+          "cues": [
+            "Engage core while breathing evenly."
+          ]
+        },
+        {
+          "poseId": "locust",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen back body with control."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Calm your pace before finishing."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "End with soft, grounded breath."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full_body_gentle_2",
+      "title": "Gentle Strength and Release",
+      "totalDurationSeconds": 600,
+      "catalogTags": [
+        "full_body_gentle",
+        "back_mobility",
+        "lower_body_mobility"
+      ],
+      "enrichmentRefs": [
+        "breath_long_exhale",
+        "sanskrit_tadasana"
+      ],
+      "steps": [
+        {
+          "poseId": "easy_seated",
+          "durationSeconds": 60,
+          "cues": [
+            "Ground through sit bones and breathe."
+          ]
+        },
+        {
+          "poseId": "cat",
+          "durationSeconds": 60,
+          "cues": [
+            "Round and broaden shoulder blades."
+          ]
+        },
+        {
+          "poseId": "cow",
+          "durationSeconds": 60,
+          "cues": [
+            "Inhale and open front body gently."
+          ]
+        },
+        {
+          "poseId": "balancing_table",
+          "durationSeconds": 60,
+          "cues": [
+            "Coordinate reach with steady core."
+          ]
+        },
+        {
+          "poseId": "high_lunge",
+          "durationSeconds": 60,
+          "cues": [
+            "Stabilize front knee and hips."
+          ]
+        },
+        {
+          "poseId": "goddess",
+          "durationSeconds": 60,
+          "cues": [
+            "Keep knees aligned over toes."
+          ]
+        },
+        {
+          "poseId": "standing_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Lengthen hamstrings with easy bend."
+          ]
+        },
+        {
+          "poseId": "seated_forward_fold",
+          "durationSeconds": 60,
+          "cues": [
+            "Stay long through spine first."
+          ]
+        },
+        {
+          "poseId": "supine_twist",
+          "durationSeconds": 60,
+          "cues": [
+            "Relax and unwind both sides."
+          ]
+        },
+        {
+          "poseId": "happy_baby",
+          "durationSeconds": 60,
+          "cues": [
+            "Complete in a calm neutral breath."
+          ]
+        }
+      ]
+    }
+  ],
+  "intakeMapping": {
+    "region:neck": [
+      "neck_shoulders",
+      "stress_relief"
+    ],
+    "region:shoulders": [
+      "neck_shoulders",
+      "upper_back"
+    ],
+    "region:back": [
+      "back_mobility",
+      "full_body_gentle"
+    ],
+    "region:hips": [
+      "hip_opening",
+      "lower_body_mobility"
+    ],
+    "region:whole_body": [
+      "full_body_gentle",
+      "stress_relief"
+    ],
+    "region:other": [
+      "full_body_gentle"
+    ],
+    "discomfort:stress": [
+      "stress_relief",
+      "full_body_gentle"
+    ],
+    "discomfort:tension": [
+      "neck_shoulders",
+      "hip_opening",
+      "back_mobility"
+    ],
+    "discomfort:stiffness": [
+      "back_mobility",
+      "hip_opening",
+      "lower_body_mobility"
+    ],
+    "discomfort:fatigue": [
+      "energy_balance",
+      "core_balance"
+    ],
+    "discomfort:other": [
+      "full_body_gentle"
+    ],
+    "intensity:mild": [
+      "restorative_flow"
+    ],
+    "intensity:moderate": [
+      "core_balance",
+      "lower_body_mobility"
+    ],
+    "intensity:severe": [
+      "restorative_flow"
+    ]
+  },
+  "poseAssetIndex": {
+    "easy_seated": {
+      "displayName": "Easy Seated",
+      "sanskritName": "Sukhasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-easy.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga easy.svg"
+      }
+    },
+    "cat": {
+      "displayName": "Cat",
+      "sanskritName": "Marjaryasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-cat.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga cat.svg"
+      }
+    },
+    "cow": {
+      "displayName": "Cow",
+      "sanskritName": "Bitilasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-cow.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga cow.svg"
+      }
+    },
+    "downward_facing_dog": {
+      "displayName": "Downward Facing Dog",
+      "sanskritName": "Adho Mukha Svanasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-downward-facing-dog.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga downward facing dog.svg"
+      }
+    },
+    "high_lunge": {
+      "displayName": "High Lunge",
+      "sanskritName": "Alanasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-high-lunge.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga high lunge.svg"
+      }
+    },
+    "warrior_1": {
+      "displayName": "Warrior I",
+      "sanskritName": "Virabhadrasana I",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-warrior-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga warrior 1.svg"
+      }
+    },
+    "warrior_2": {
+      "displayName": "Warrior II",
+      "sanskritName": "Virabhadrasana II",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-warrior-2.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga warrior 2.svg"
+      }
+    },
+    "triangle": {
+      "displayName": "Triangle",
+      "sanskritName": "Trikonasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-triangle.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga triangle.svg"
+      }
+    },
+    "reverse_warrior": {
+      "displayName": "Reverse Warrior",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-reverse-warrior.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga reverse warrior.svg"
+      }
+    },
+    "half_moon": {
+      "displayName": "Half Moon",
+      "sanskritName": "Ardha Chandrasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-half-moon.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga half moon.svg"
+      }
+    },
+    "lizard": {
+      "displayName": "Lizard",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-lizard.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga lizard.svg"
+      }
+    },
+    "pigeon": {
+      "displayName": "Pigeon",
+      "sanskritName": "Eka Pada Rajakapotasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-pigeon.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga pigeon.svg"
+      }
+    },
+    "standing_forward_fold": {
+      "displayName": "Standing Forward Fold",
+      "sanskritName": "Uttanasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-standing-forward-fold-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga standing forward fold 1.svg"
+      }
+    },
+    "seated_forward_fold": {
+      "displayName": "Seated Forward Fold",
+      "sanskritName": "Paschimottanasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-seated-forward-fold-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga seated forward fold 1.svg"
+      }
+    },
+    "seated_spinal_twist": {
+      "displayName": "Seated Spinal Twist",
+      "sanskritName": "Ardha Matsyendrasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-seated-spinal-twist-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga seated spinal twist 1.svg"
+      }
+    },
+    "bound_angle": {
+      "displayName": "Bound Angle",
+      "sanskritName": "Baddha Konasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-bound-angle-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga bound angle 1.svg"
+      }
+    },
+    "happy_baby": {
+      "displayName": "Happy Baby",
+      "sanskritName": "Ananda Balasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-happy-baby.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga happy baby.svg"
+      }
+    },
+    "supine_twist": {
+      "displayName": "Supine Twist",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-supine-twist-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga supine twist 1.svg"
+      }
+    },
+    "boat": {
+      "displayName": "Boat",
+      "sanskritName": "Navasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-boat-2.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga boat 2.svg"
+      }
+    },
+    "locust": {
+      "displayName": "Locust",
+      "sanskritName": "Salabhasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-locust.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga locust.svg"
+      }
+    },
+    "dolphin": {
+      "displayName": "Dolphin",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-dolphin.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga dolphin.svg"
+      }
+    },
+    "balancing_table": {
+      "displayName": "Balancing Table",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-balancing-table.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga balancing table.svg"
+      }
+    },
+    "camel": {
+      "displayName": "Camel",
+      "sanskritName": "Ustrasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-camel-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga camel 1.svg"
+      }
+    },
+    "goddess": {
+      "displayName": "Goddess",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-goddess-1.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga goddess 1.svg"
+      }
+    },
+    "tree": {
+      "displayName": "Tree",
+      "sanskritName": "Vrksasana",
+      "stillImage": {
+        "path": "/routine-corpus/assets/yoga-tree-2.svg",
+        "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga tree 2.svg"
+      }
+    },
+    "childs_pose": {
+      "displayName": "Child's Pose",
+      "sanskritName": "Balasana",
+      "fallback": true
+    }
+  },
+  "enrichmentLibrary": [
+    {
+      "id": "breath_box_4_4",
+      "type": "breath",
+      "text": "Breathe in for 4 and out for 4 with a soft jaw."
+    },
+    {
+      "id": "mindful_notice",
+      "type": "mindfulness",
+      "text": "Notice one point of steady contact with the mat."
+    },
+    {
+      "id": "quote_bks_iyengar",
+      "type": "quote",
+      "text": "Yoga does not just change the way we see things, it transforms the person who sees.",
+      "attribution": "B. K. S. Iyengar"
+    },
+    {
+      "id": "sanskrit_tadasana",
+      "type": "sanskrit_gloss",
+      "text": "Tadasana is commonly translated as Mountain Pose."
+    },
+    {
+      "id": "breath_long_exhale",
+      "type": "breath",
+      "text": "Keep your exhale slightly longer than your inhale for a calmer pace."
+    },
+    {
+      "id": "quote_desikachar",
+      "type": "quote",
+      "text": "The success of yoga does not lie in the ability to perform postures but in how it changes us.",
+      "attribution": "T. K. V. Desikachar"
+    }
+  ],
+  "safetySubstitutions": {
+    "childs_pose": "easy_seated"
+  }
+}
