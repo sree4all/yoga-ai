@@ -5,6 +5,7 @@ import type { RoutineRequest } from "@/lib/contracts/routine-zod";
 import {
   allowedPoseIdsForRoutines,
   clampRoutineToAllowedPoses,
+  finalizeRoutineFlow,
   resolveCatalogTags,
   routinesForTags,
 } from "@/lib/corpus/bundle";
@@ -54,5 +55,46 @@ describe("corpus routing and constraints", () => {
       allowed,
     );
     expect(allowed.has(clamped.steps[0].poseId)).toBe(true);
+  });
+
+  it("dedupes and enforces final savasana", () => {
+    const out = finalizeRoutineFlow(parsed, {
+      title: "X",
+      totalDurationMinutes: 10,
+      yogaStyle: { category: "Hatha", rationale: "x" },
+      steps: [
+        {
+          poseId: "easy_seated",
+          instruction: "Start",
+          durationSeconds: 60,
+          media: { imageUrl: "/routine-corpus/assets/yoga-easy-seated.svg", videoLabel: "x" },
+        },
+        {
+          poseId: "easy_seated",
+          instruction: "Repeat",
+          durationSeconds: 60,
+          media: { imageUrl: "/routine-corpus/assets/yoga-easy-seated.svg", videoLabel: "x" },
+        },
+        {
+          poseId: "cat",
+          instruction: "Move",
+          durationSeconds: 60,
+          media: { imageUrl: "https://example.com/a.png", videoLabel: "x" },
+        },
+      ],
+    }, {
+      candidateRoutines: routinesForTags(parsed, resolveCatalogTags(parsed, request)),
+      request,
+    });
+    const ids = out.steps.map((step) => step.poseId);
+    expect(ids.filter((id) => id === "easy_seated")).toHaveLength(1);
+    expect(
+      ids.some((id) =>
+        ["warrior_1", "warrior_2", "high_lunge", "triangle", "dolphin"].includes(id),
+      ),
+    ).toBe(true);
+    expect(ids[ids.length - 1]).toBe("savasana");
+    expect(out.totalDurationMinutes).toBeGreaterThanOrEqual(9);
+    expect(out.yogaStyle.category).toBe("Restorative");
   });
 });
