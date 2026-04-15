@@ -34,14 +34,51 @@ export async function searchYoutubeTutorial(
   if (res.status === 429 || (res.status >= 500 && res.status < 600)) {
     throw new Error(`YouTube HTTP ${res.status}`);
   }
-  if (!res.ok) return null;
 
-  const json = (await res.json()) as {
+  const bodyText = await res.text();
+  let json: {
     items?: { id?: { videoId?: string }; snippet?: { title?: string } }[];
+    error?: { code?: number; message?: string; errors?: { reason?: string }[] };
   };
+  try {
+    json = JSON.parse(bodyText) as typeof json;
+  } catch {
+    if (!res.ok) {
+      console.warn(
+        JSON.stringify({
+          source: "yoga-ai-youtube",
+          event: "search_parse_error",
+          status: res.status,
+        }),
+      );
+    }
+    return null;
+  }
+
+  if (!res.ok) {
+    const msg =
+      json.error?.message ||
+      json.error?.errors?.map((e) => e.reason).join("; ") ||
+      bodyText.slice(0, 200);
+    console.warn(
+      JSON.stringify({
+        source: "yoga-ai-youtube",
+        event: "search_http_error",
+        status: res.status,
+        message: msg.slice(0, 400),
+        hint:
+          res.status === 403
+            ? "If using Google Cloud API key restrictions: HTTP referrer rules block server-side calls (e.g. Vercel). Use Application restrictions: None, or a server-only key without referrer locks."
+            : undefined,
+      }),
+    );
+    return null;
+  }
   const id = json.items?.[0]?.id?.videoId;
   const title = json.items?.[0]?.snippet?.title;
-  if (!id) return null;
+  if (!id) {
+    return null;
+  }
 
   const watchUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}`;
   if (!isAllowedYoutubeHttpsUrl(watchUrl)) return null;

@@ -28,7 +28,12 @@ export async function fetchCommonsImageForPose(
 
   const res = await fetch(url.toString(), {
     signal,
-    headers: { Accept: "application/json" },
+    headers: {
+      Accept: "application/json",
+      // https://meta.wikimedia.org/wiki/User-Agent_policy
+      "User-Agent":
+        "yoga-ai/1.0 (Wikimedia Commons API; educational yoga routine app)",
+    },
     next: { revalidate: 0 },
   });
   if (res.status === 429 || (res.status >= 500 && res.status < 600)) {
@@ -37,13 +42,27 @@ export async function fetchCommonsImageForPose(
   if (!res.ok) return null;
 
   const json = (await res.json()) as {
-    query?: { pages?: Record<string, { imageinfo?: { url?: string; extmetadata?: Record<string, { value?: string }> }[] }> };
+    query?: {
+      pages?: Record<
+        string,
+        {
+          missing?: boolean;
+          imageinfo?: {
+            url?: string;
+            /** Preferred for <img>: scaled JPEG/PNG thumb; full `url` can be SVG/TIFF/huge. */
+            thumburl?: string;
+            extmetadata?: Record<string, { value?: string }>;
+          }[];
+        }
+      >;
+    };
   };
   const pages = json.query?.pages;
   if (!pages) return null;
   const first = Object.values(pages)[0];
-  const info = first?.imageinfo?.[0];
-  const rawUrl = info?.url;
+  if (!first || first.missing) return null;
+  const info = first.imageinfo?.[0];
+  const rawUrl = info?.thumburl || info?.url;
   if (!rawUrl || !isAllowedHttpsImageUrl(rawUrl)) return null;
 
   const artist = info.extmetadata?.Artist?.value?.replace(/<[^>]+>/g, "").trim();

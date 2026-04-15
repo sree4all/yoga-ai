@@ -39,9 +39,7 @@ function StepPoseImage({
     );
   }
 
-  /* Plain <img>: Next/Image runs server-side optimization via /_next/image; Wikimedia and many
-   * CDNs block or throttle that fetch, so most pose images failed while one could load by chance.
-   * Browser-direct load + no-referrer matches typical hotlink behavior Commons allows. */
+  /* Plain <img> avoids Next/Image optimizer. Default referrer is fine for upload.wikimedia.org thumbs. */
   return (
     // eslint-disable-next-line @next/next/no-img-element -- external pose URLs; avoid Image optimizer
     <img
@@ -50,7 +48,6 @@ function StepPoseImage({
       className="h-full w-full object-cover"
       loading="lazy"
       decoding="async"
-      referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
     />
   );
