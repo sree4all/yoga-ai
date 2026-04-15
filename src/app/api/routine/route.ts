@@ -16,6 +16,7 @@ import {
   clampRoutineToAllowedPoses,
   corpusBundleVersion,
   corpusLoadedAt,
+  finalizeRoutineFlow,
   loadCorpusBundle,
   resolveCatalogTags,
   routinesForTags,
@@ -168,6 +169,7 @@ export async function POST(req: Request) {
       );
       generated = applyCorpusStillImageDefaults(corpus, generated);
       generated = applyCorpusInstructionEnrichment(corpus, generated);
+      generated = finalizeRoutineFlow(corpus, generated);
     }
 
     try {

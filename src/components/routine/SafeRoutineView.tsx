@@ -10,6 +10,10 @@ interface Props {
   data: Extract<RoutineResponse, { kind: "safe_routine" }>;
 }
 
+function isLocalImageUrl(url: string): boolean {
+  return url.startsWith("/") && !url.startsWith("//");
+}
+
 function StepPoseImage({
   poseLabel,
   imageUrl,
@@ -85,6 +89,7 @@ export function SafeRoutineView({ data }: Props) {
         {routine.steps.map((s, i) => {
           const poseLabel = s.poseId.replace(/_/g, " ");
           const hasVideo = Boolean(s.media.videoUrl?.trim());
+          const showLocalImage = isLocalImageUrl(s.media.imageUrl);
           return (
             <li key={`${s.poseId}-${i}-${retryKeys[i] ?? 0}`} className="text-slate-800">
               <span className="font-medium text-slate-900">{poseLabel}</span>
@@ -98,23 +103,25 @@ export function SafeRoutineView({ data }: Props) {
 
               <p className="mt-3 text-xs leading-relaxed text-slate-500">{WELLNESS_MEDIA_COPY}</p>
 
-              <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-slate-50/90">
-                  <div className="relative aspect-[4/3] w-full bg-slate-200">
-                    <StepPoseImage
-                      poseLabel={poseLabel}
-                      imageUrl={s.media.imageUrl}
-                      onRetry={() => bumpRetry(i)}
-                    />
+              <div className={`mt-3 grid gap-4 ${showLocalImage ? "sm:grid-cols-2" : ""}`}>
+                {showLocalImage ? (
+                  <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-slate-50/90">
+                    <div className="relative aspect-[4/3] w-full bg-slate-200">
+                      <StepPoseImage
+                        poseLabel={poseLabel}
+                        imageUrl={s.media.imageUrl}
+                        onRetry={() => bumpRetry(i)}
+                      />
+                    </div>
+                    <p className="px-2 py-1 text-center text-xs text-slate-500">
+                      {s.media.imageAttribution ? (
+                        <span title={s.media.imageAttribution}>Image: {s.media.imageAttribution}</span>
+                      ) : (
+                        "Pose visual"
+                      )}
+                    </p>
                   </div>
-                  <p className="px-2 py-1 text-center text-xs text-slate-500">
-                    {s.media.imageAttribution ? (
-                      <span title={s.media.imageAttribution}>Image: {s.media.imageAttribution}</span>
-                    ) : (
-                      "Pose visual"
-                    )}
-                  </p>
-                </div>
+                ) : null}
                 <div className="flex flex-col justify-center rounded-xl border border-dashed border-violet-200/90 bg-violet-50/40 px-4 py-3">
                   <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
                     Video reference

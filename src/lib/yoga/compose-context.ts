@@ -45,7 +45,7 @@ Output MUST be valid JSON only, matching this shape:
       "instruction": string,
       "durationSeconds": number,
       "media": {
-        "imageUrl": string (https placeholder ok, e.g. picsum seed per poseId),
+        "imageUrl": string (prefer local /routine-corpus/assets/...; if unavailable, use any non-empty placeholder string),
         "videoLabel": string (short hint for finding a video, e.g. YouTube search phrase for this pose)
       }
     }

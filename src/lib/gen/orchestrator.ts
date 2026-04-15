@@ -173,7 +173,7 @@ async function callGenOrchestratorChatCompletions(
 function defaultMediaForPose(poseId: string): StepMedia {
   const label = poseId.replace(/_/g, " ");
   return {
-    imageUrl: `https://picsum.photos/seed/${encodeURIComponent(poseId)}/480/320`,
+    imageUrl: "/routine-corpus/assets/yoga-easy-seated.svg",
     videoLabel: `YouTube search: “${label}” yoga pose (gentle)`,
   };
 }

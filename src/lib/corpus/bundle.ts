@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 import type { RoutineRequest } from "@/lib/contracts/routine-zod";
-import type { GeneratedRoutinePayload } from "@/lib/gen/orchestrator";
+import type { GeneratedRoutinePayload, GeneratedRoutineStep } from "@/lib/gen/orchestrator";
 import {
   corpusBundleSchema,
   type CorpusBundle,
@@ -12,6 +12,45 @@ import { ROUTINE_CORPUS_ASSET_PUBLIC_PREFIX, ROUTINE_CORPUS_BUNDLE_PATH } from "
 
 let memoizedBundle: CorpusBundle | null = null;
 let memoizedBundleMtime: string | null = null;
+const FALLBACK_LOCAL_IMAGE = "/routine-corpus/assets/yoga-easy-seated.svg";
+const REST_POSE_ID = "savasana";
+const WARMUP_POSE_IDS = new Set(["easy_seated", "cat", "cow", "childs_pose"]);
+const COOLDOWN_POSE_IDS = new Set(["childs_pose", "bound_angle", "supine_twist", "happy_baby"]);
+
+function normalizeAssetPath(pathValue: string): string {
+  const normalized = pathValue
+    .replace(/\\/g, "/")
+    .replace(/-([0-9]+)\.svg$/i, ".svg")
+    .replace("yoga-easy.svg", "yoga-easy-seated.svg");
+  return normalized;
+}
+
+function localImageForPose(bundle: CorpusBundle, poseId: string): string {
+  const configuredPath = bundle.poseAssetIndex[poseId]?.stillImage?.path;
+  if (!configuredPath) return FALLBACK_LOCAL_IMAGE;
+  const normalized = normalizeAssetPath(configuredPath);
+  return normalized.startsWith("/")
+    ? normalized
+    : `${ROUTINE_CORPUS_ASSET_PUBLIC_PREFIX}${normalized}`;
+}
+
+function buildLocalStep(
+  bundle: CorpusBundle,
+  poseId: string,
+  instruction: string,
+  durationSeconds = 60,
+): GeneratedRoutineStep {
+  const label = poseId.replace(/_/g, " ");
+  return {
+    poseId,
+    instruction,
+    durationSeconds,
+    media: {
+      imageUrl: localImageForPose(bundle, poseId),
+      videoLabel: `YouTube search: “${label}” yoga pose (gentle)`,
+    },
+  };
+}
 
 export async function loadCorpusBundle(forceReload = false): Promise<CorpusBundle | null> {
   if (!forceReload && memoizedBundle) return memoizedBundle;
@@ -104,9 +143,10 @@ export function applyCorpusStillImageDefaults(
     const entry = bundle.poseAssetIndex[step.poseId];
     const configuredPath = entry?.stillImage?.path;
     if (!configuredPath) return step;
-    const imageUrl = configuredPath.startsWith("/")
-      ? configuredPath
-      : `${ROUTINE_CORPUS_ASSET_PUBLIC_PREFIX}${configuredPath}`;
+    const normalized = normalizeAssetPath(configuredPath);
+    const imageUrl = normalized.startsWith("/")
+      ? normalized
+      : `${ROUTINE_CORPUS_ASSET_PUBLIC_PREFIX}${normalized}`;
     return {
       ...step,
       media: {
@@ -163,4 +203,69 @@ export function clampRoutineToAllowedPoses(
     };
   });
   return { ...payload, steps };
+}
+
+export function finalizeRoutineFlow(
+  bundle: CorpusBundle,
+  payload: GeneratedRoutinePayload,
+): GeneratedRoutinePayload {
+  const deduped: GeneratedRoutineStep[] = [];
+  const seenPoseIds = new Set<string>();
+  for (const step of payload.steps) {
+    if (seenPoseIds.has(step.poseId)) continue;
+    seenPoseIds.add(step.poseId);
+    deduped.push({
+      ...step,
+      media: {
+        ...step.media,
+        imageUrl: step.media.imageUrl?.trim() || localImageForPose(bundle, step.poseId),
+      },
+    });
+  }
+
+  const steps = deduped.length > 0 ? deduped : [buildLocalStep(bundle, "easy_seated", "Sit comfortably and settle your breath.", 60)];
+
+  if (!WARMUP_POSE_IDS.has(steps[0].poseId)) {
+    steps.unshift(buildLocalStep(bundle, "easy_seated", "Sit comfortably and settle your breath.", 60));
+  }
+
+  if (!steps.some((step) => COOLDOWN_POSE_IDS.has(step.poseId))) {
+    steps.push(buildLocalStep(bundle, "supine_twist", "Lie on your back and release gently side to side.", 60));
+  }
+
+  const existingRestIdx = steps.findIndex(
+    (step) => step.poseId === REST_POSE_ID || step.poseId === "shavasana",
+  );
+  if (existingRestIdx >= 0) {
+    const existing = steps[existingRestIdx];
+    steps.splice(existingRestIdx, 1);
+    steps.push({
+      ...existing,
+      poseId: REST_POSE_ID,
+      durationSeconds: existing.durationSeconds || 120,
+      media: {
+        ...existing.media,
+        imageUrl: localImageForPose(bundle, REST_POSE_ID),
+      },
+    });
+  } else {
+    steps.push(
+      buildLocalStep(
+        bundle,
+        REST_POSE_ID,
+        "Rest on your back in Savasana, allowing your breath to settle naturally.",
+        120,
+      ),
+    );
+  }
+
+  const compacted = steps.filter(
+    (step, idx) => idx === 0 || steps[idx - 1]?.poseId !== step.poseId,
+  );
+  const totalSeconds = compacted.reduce((acc, step) => acc + (step.durationSeconds || 0), 0);
+  return {
+    ...payload,
+    totalDurationMinutes: Math.max(1, Math.round(totalSeconds / 60)),
+    steps: compacted,
+  };
 }

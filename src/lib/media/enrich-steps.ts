@@ -6,7 +6,6 @@ import {
   mediaEnrichBudgetMs,
   mediaStepTimeoutMs,
 } from "@/lib/media/types";
-import { fetchCommonsImageForPose } from "@/lib/media/wikimedia";
 import { searchYoutubeTutorial } from "@/lib/media/youtube-search";
 
 function stepSignal(parent: AbortSignal, deadlineMs: number): AbortSignal {
@@ -44,10 +43,6 @@ async function mapPool<T, R>(
   await Promise.all(Array.from({ length: n }, () => worker()));
   return results;
 }
-
-const FALLBACK_SVG = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
-  `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320"><rect fill="#e2e8f0" width="480" height="320"/><text x="240" y="160" text-anchor="middle" fill="#64748b" font-family="system-ui,sans-serif" font-size="15">Image unavailable</text></svg>`,
-)}`;
 
 export async function enrichGeneratedRoutine(
   payload: GeneratedRoutinePayload,
@@ -88,27 +83,11 @@ async function enrichStep(
   let videoTitle = step.media.videoTitle;
   const videoLabel = step.media.videoLabel;
 
-  try {
-    const commons = await withOptionalRetry(
-      () =>
-        fetchCommonsImageForPose(
-          step.poseId,
-          AbortSignal.any([sig, AbortSignal.timeout(ctx.stepTimeout)]),
-        ),
-      (err) =>
-        err instanceof Error && /Commons HTTP (429|50[0-9])/.test(err.message),
-    );
-    if (commons) {
-      imageUrl = commons.imageUrl;
-      imageAttribution = commons.attribution;
-    } else if (!imageUrl.startsWith("https://")) {
-      imageUrl = FALLBACK_SVG;
-      imageAttribution = undefined;
-    }
-  } catch {
-    if (!imageUrl.startsWith("https://")) {
-      imageUrl = FALLBACK_SVG;
-    }
+  if (!imageUrl.trim()) {
+    imageUrl = "/routine-corpus/assets/yoga-easy-seated.svg";
+  }
+  if (!imageUrl.startsWith("/")) {
+    imageAttribution = undefined;
   }
 
   if (ctx.youtubeApiKey) {
