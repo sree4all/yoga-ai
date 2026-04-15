@@ -60,16 +60,21 @@ export async function searchYoutubeTutorial(
       json.error?.message ||
       json.error?.errors?.map((e) => e.reason).join("; ") ||
       bodyText.slice(0, 200);
+    let hint: string | undefined;
+    if (res.status === 403) {
+      hint =
+        "If using Google Cloud API key restrictions: HTTP referrer rules block server-side calls (e.g. Vercel). Use Application restrictions: None, or a server-only key without referrer locks.";
+    } else if (res.status === 401) {
+      hint =
+        "search.list accepts a Google Cloud API key. Use Credentials → API key (not OAuth client ID/secret), enable YouTube Data API v3 on that project, and allow that API in key restrictions. Keys from other products (e.g. AI/Vertex only) or the wrong project often return this OAuth-style message.";
+    }
     console.warn(
       JSON.stringify({
         source: "yoga-ai-youtube",
         event: "search_http_error",
         status: res.status,
         message: msg.slice(0, 400),
-        hint:
-          res.status === 403
-            ? "If using Google Cloud API key restrictions: HTTP referrer rules block server-side calls (e.g. Vercel). Use Application restrictions: None, or a server-only key without referrer locks."
-            : undefined,
+        ...(hint ? { hint } : {}),
       }),
     );
     return null;
