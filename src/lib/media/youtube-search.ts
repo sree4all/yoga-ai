@@ -1,5 +1,7 @@
 import "server-only";
 
+import https from "node:https";
+
 import { isAllowedYoutubeHttpsUrl } from "@/lib/media/types";
 
 export interface YoutubeSearchHit {
@@ -7,15 +9,116 @@ export interface YoutubeSearchHit {
   title: string;
 }
 
+/** Strip common copy/paste issues; never log the key. */
+function normalizeGoogleApiKey(raw: string): string {
+  let s = raw.trim().replace(/[\u200B-\u200D\uFEFF]/g, "");
+  if (
+    (s.startsWith('"') && s.endsWith('"')) ||
+    (s.startsWith("'") && s.endsWith("'"))
+  ) {
+    s = s.slice(1, -1).trim();
+  }
+  if (/^bearer\s+/i.test(s)) {
+    s = s.replace(/^bearer\s+/i, "").trim();
+  }
+  return s;
+}
+
+/** Prefer `YOUTUBE_DATA_API_KEY`; common misnames supported. */
+export function youtubeDataApiKeyFromEnv(): string {
+  return normalizeGoogleApiKey(
+    process.env.YOUTUBE_DATA_API_KEY ??
+      process.env.YOUTUBE_API_KEY ??
+      process.env.GOOGLE_API_KEY ??
+      "",
+  );
+}
+
+function httpsJsonGet(
+  urlString: string,
+  headers: Record<string, string>,
+  signal: AbortSignal,
+): Promise<{ statusCode: number; body: string }> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(Object.assign(new Error("Aborted"), { name: "AbortError" }));
+      return;
+    }
+    const u = new URL(urlString);
+    const req = https.request(
+      {
+        hostname: u.hostname,
+        port: u.port || 443,
+        path: `${u.pathname}${u.search}`,
+        method: "GET",
+        headers,
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (c) => chunks.push(c));
+        res.on("end", () => {
+          resolve({
+            statusCode: res.statusCode ?? 0,
+            body: Buffer.concat(chunks).toString("utf8"),
+          });
+        });
+      },
+    );
+    const onAbort = () => {
+      req.destroy();
+      reject(Object.assign(new Error("Aborted"), { name: "AbortError" }));
+    };
+    signal.addEventListener("abort", onAbort, { once: true });
+    req.on("error", reject);
+    req.on("close", () => signal.removeEventListener("abort", onAbort));
+    req.end();
+  });
+}
+
+type YoutubeErrorJson = {
+  items?: { id?: { videoId?: string }; snippet?: { title?: string } }[];
+  error?: {
+    code?: number;
+    message?: string;
+    status?: string;
+    errors?: { reason?: string; domain?: string }[];
+    details?: { "@type"?: string; reason?: string; metadata?: { service?: string } }[];
+  };
+};
+
+function extractGoogleRpcErrorInfo(json: YoutubeErrorJson): {
+  reason?: string;
+  service?: string;
+} {
+  const details = json.error?.details;
+  if (!Array.isArray(details)) return {};
+  for (const d of details) {
+    if (
+      d &&
+      d["@type"] === "type.googleapis.com/google.rpc.ErrorInfo" &&
+      typeof d.reason === "string"
+    ) {
+      return {
+        reason: d.reason,
+        service:
+          typeof d.metadata?.service === "string" ? d.metadata.service : undefined,
+      };
+    }
+  }
+  return {};
+}
+
 /**
  * YouTube Data API v3 search — returns first video result or null.
+ * Sends the key as both `key` (query) and `X-Goog-Api-Key` (header). Uses `node:https` so Next.js
+ * `fetch` caching / instrumentation cannot drop credentials (`CREDENTIALS_MISSING`).
  */
 export async function searchYoutubeTutorial(
   poseId: string,
   apiKey: string,
   signal: AbortSignal,
 ): Promise<YoutubeSearchHit | null> {
-  const key = apiKey.trim();
+  const key = normalizeGoogleApiKey(apiKey);
   if (!key) return null;
 
   const q = `${poseId.replace(/_/g, " ")} yoga tutorial gentle`;
@@ -26,54 +129,71 @@ export async function searchYoutubeTutorial(
   url.searchParams.set("q", q);
   url.searchParams.set("key", key);
 
-  const res = await fetch(url.toString(), {
+  const r = await httpsJsonGet(
+    url.toString(),
+    {
+      Accept: "application/json",
+      "X-Goog-Api-Key": key,
+    },
     signal,
-    headers: { Accept: "application/json" },
-    next: { revalidate: 0 },
-  });
-  if (res.status === 429 || (res.status >= 500 && res.status < 600)) {
-    throw new Error(`YouTube HTTP ${res.status}`);
+  );
+  const statusCode = r.statusCode;
+  const bodyText = r.body;
+
+  if (statusCode === 429 || (statusCode >= 500 && statusCode < 600)) {
+    throw new Error(`YouTube HTTP ${statusCode}`);
   }
 
-  const bodyText = await res.text();
-  let json: {
-    items?: { id?: { videoId?: string }; snippet?: { title?: string } }[];
-    error?: { code?: number; message?: string; errors?: { reason?: string }[] };
-  };
+  let json: YoutubeErrorJson;
   try {
-    json = JSON.parse(bodyText) as typeof json;
+    json = JSON.parse(bodyText) as YoutubeErrorJson;
   } catch {
-    if (!res.ok) {
+    if (statusCode < 200 || statusCode >= 300) {
       console.warn(
         JSON.stringify({
           source: "yoga-ai-youtube",
           event: "search_parse_error",
-          status: res.status,
+          status: statusCode,
         }),
       );
     }
     return null;
   }
 
-  if (!res.ok) {
+  if (statusCode < 200 || statusCode >= 300) {
+    const rpc = extractGoogleRpcErrorInfo(json);
     const msg =
       json.error?.message ||
       json.error?.errors?.map((e) => e.reason).join("; ") ||
       bodyText.slice(0, 200);
     let hint: string | undefined;
-    if (res.status === 403) {
+    if (statusCode === 403) {
       hint =
         "If using Google Cloud API key restrictions: HTTP referrer rules block server-side calls (e.g. Vercel). Use Application restrictions: None, or a server-only key without referrer locks.";
-    } else if (res.status === 401) {
-      hint =
-        "search.list accepts a Google Cloud API key. Use Credentials → API key (not OAuth client ID/secret), enable YouTube Data API v3 on that project, and allow that API in key restrictions. Keys from other products (e.g. AI/Vertex only) or the wrong project often return this OAuth-style message.";
+    } else if (statusCode === 401) {
+      if (rpc.reason === "CREDENTIALS_MISSING") {
+        hint =
+          "Google only returns this when no API key is on the request. Browser/curl tests must include &key=YOUR_KEY in the URL (opening the path without key always yields this JSON). For the app: set YOUTUBE_DATA_API_KEY in Vercel for Production, redeploy, and check logs for youtubeApiKeyLen > 0.";
+      } else {
+        hint =
+          "Confirm the key is a Cloud API key with YouTube Data API v3 enabled and allowed on that key.";
+      }
     }
     console.warn(
       JSON.stringify({
         source: "yoga-ai-youtube",
         event: "search_http_error",
-        status: res.status,
+        endpoint: "/youtube/v3/search",
+        status: statusCode,
         message: msg.slice(0, 400),
+        ...(rpc.reason ? { apiErrorReason: rpc.reason } : {}),
+        ...(rpc.service ? { apiErrorService: rpc.service } : {}),
+        ...(rpc.reason === "CREDENTIALS_MISSING"
+          ? {
+              youtubeApiKeyLen: key.length,
+              queryHadKeyParam: url.searchParams.has("key"),
+            }
+          : {}),
         ...(hint ? { hint } : {}),
       }),
     );

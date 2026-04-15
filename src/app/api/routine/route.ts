@@ -12,6 +12,7 @@ import {
 import { validateRoutineAgainstAvoidList } from "@/lib/knowledge/validate-routine";
 import type { BodyRegion } from "@/lib/types/intake";
 import { API_RESPONSE_DISCLAIMER } from "@/lib/copy/disclaimer";
+import { youtubeDataApiKeyFromEnv } from "@/lib/media/youtube-search";
 
 export const runtime = "nodejs";
 
@@ -141,7 +142,7 @@ export async function POST(req: Request) {
       const { enrichGeneratedRoutine } = await import("@/lib/media/enrich-steps");
       generated = await enrichGeneratedRoutine(generated, {
         signal: controller.signal,
-        youtubeApiKey: process.env.YOUTUBE_DATA_API_KEY,
+        youtubeApiKey: youtubeDataApiKeyFromEnv(),
       });
     } catch (enrichErr) {
       const e = enrichErr instanceof Error ? enrichErr : new Error(String(enrichErr));
@@ -194,7 +195,7 @@ export async function POST(req: Request) {
 
 /** Health + which generation path is configured (no secrets). */
 function youtubeEnrichmentConfigured(): boolean {
-  return Boolean(process.env.YOUTUBE_DATA_API_KEY?.trim());
+  return Boolean(youtubeDataApiKeyFromEnv());
 }
 
 export async function GET() {
