@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useState } from "react";
 import type { RoutineResponse } from "@/lib/contracts/routine-zod";
 
@@ -21,9 +20,8 @@ function StepPoseImage({
   onRetry: () => void;
 }) {
   const [failed, setFailed] = useState(false);
-  const isData = imageUrl.startsWith("data:");
 
-  if (failed && !isData) {
+  if (failed) {
     return (
       <div className="flex min-h-[12rem] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-100/80 px-4 py-6 text-center">
         <p className="text-sm text-slate-600">Could not load this image.</p>
@@ -41,30 +39,18 @@ function StepPoseImage({
     );
   }
 
-  if (isData) {
-    return (
-      <Image
-        src={imageUrl}
-        alt=""
-        width={480}
-        height={320}
-        className="h-full w-full object-cover"
-        unoptimized
-        loader={({ src }) => src}
-      />
-    );
-  }
-
+  /* Plain <img>: Next/Image runs server-side optimization via /_next/image; Wikimedia and many
+   * CDNs block or throttle that fetch, so most pose images failed while one could load by chance.
+   * Browser-direct load + no-referrer matches typical hotlink behavior Commons allows. */
   return (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element -- external pose URLs; avoid Image optimizer
+    <img
       src={imageUrl}
       alt={poseLabel}
-      width={480}
-      height={320}
-      sizes="(max-width: 640px) 100vw, 480px"
       className="h-full w-full object-cover"
       loading="lazy"
-      unoptimized={imageUrl.includes("picsum.photos")}
+      decoding="async"
+      referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
     />
   );
