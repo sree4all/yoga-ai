@@ -1,3 +1,5 @@
+import { randomBytes } from "node:crypto";
+
 import type { KnowledgeEntry } from "@/lib/types/intake";
 import type { RoutineRequest } from "@/lib/contracts/routine-zod";
 import { composeOrchestratorPrompts } from "@/lib/yoga/compose-context";
@@ -5,6 +7,9 @@ import { composeOrchestratorPrompts } from "@/lib/yoga/compose-context";
 export interface StepMedia {
   imageUrl: string;
   videoLabel: string;
+  imageAttribution?: string;
+  videoUrl?: string;
+  videoTitle?: string;
 }
 
 export interface GeneratedRoutineStep {
@@ -38,7 +43,12 @@ export async function generateRoutineStructured(
   entry: KnowledgeEntry,
   options?: { signal?: AbortSignal },
 ): Promise<GeneratedRoutinePayload> {
-  const { systemPrompt, userPrompt } = composeOrchestratorPrompts(request, entry);
+  const diversityNonce = randomBytes(12).toString("hex");
+  const { systemPrompt, userPrompt } = composeOrchestratorPrompts(
+    request,
+    entry,
+    { diversityNonce },
+  );
   const signal = options?.signal;
 
   const baseUrl = normalizeBaseUrl(process.env.GENORCHESTRATOR_BASE_URL);
@@ -158,6 +168,20 @@ function defaultMediaForPose(poseId: string): StepMedia {
   };
 }
 
+function sanitizeStepMedia(media: StepMedia): StepMedia {
+  const m = { ...media };
+  if (m.videoUrl) {
+    const ok =
+      /^https:\/\//i.test(m.videoUrl) &&
+      (/youtube\.com\//i.test(m.videoUrl) || /youtu\.be\//i.test(m.videoUrl));
+    if (!ok) {
+      delete m.videoUrl;
+      delete m.videoTitle;
+    }
+  }
+  return m;
+}
+
 function parseRoutinePayload(data: unknown): GeneratedRoutinePayload {
   const obj = data as Record<string, unknown>;
   const inner = (obj.routine ?? obj) as Record<string, unknown>;
@@ -181,19 +205,28 @@ function parseRoutinePayload(data: unknown): GeneratedRoutinePayload {
     const step = s as Record<string, unknown>;
     const poseId = String(step.poseId ?? "pose");
     const mediaRaw = step.media as Record<string, unknown> | undefined;
+    const base = defaultMediaForPose(poseId);
     const media: StepMedia = {
-      imageUrl: String(
-        mediaRaw?.imageUrl ?? defaultMediaForPose(poseId).imageUrl,
-      ),
-      videoLabel: String(
-        mediaRaw?.videoLabel ?? defaultMediaForPose(poseId).videoLabel,
-      ),
+      imageUrl: String(mediaRaw?.imageUrl ?? base.imageUrl),
+      videoLabel: String(mediaRaw?.videoLabel ?? base.videoLabel),
     };
+    const attr = mediaRaw?.imageAttribution;
+    if (attr != null && String(attr).trim()) {
+      media.imageAttribution = String(attr).trim();
+    }
+    const vu = mediaRaw?.videoUrl;
+    if (vu != null && String(vu).trim()) {
+      media.videoUrl = String(vu).trim();
+    }
+    const vt = mediaRaw?.videoTitle;
+    if (vt != null && String(vt).trim()) {
+      media.videoTitle = String(vt).trim();
+    }
     return {
       poseId,
       instruction: String(step.instruction ?? ""),
       durationSeconds: Number(step.durationSeconds ?? 60),
-      media,
+      media: sanitizeStepMedia(media),
     };
   });
   return { title, totalDurationMinutes, yogaStyle, steps };

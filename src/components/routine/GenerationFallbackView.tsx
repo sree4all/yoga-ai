@@ -8,7 +8,7 @@ interface Props {
 export function GenerationFallbackView({ data, onRetry }: Props) {
   const { fallback } = data;
   return (
-    <article className="rounded-2xl border border-amber-200 bg-amber-50/80 p-6 shadow-sm">
+    <article className="yoga-panel border-amber-200/90 bg-amber-50/90 p-6">
       <p className="text-sm text-slate-700">{data.disclaimer}</p>
       <p className="mt-3 font-medium text-amber-900">{fallback.message}</p>
       <ol className="mt-4 list-decimal space-y-3 pl-5 text-slate-800">

@@ -15,7 +15,7 @@ interface Props {
 
 export function RoutineResult({ response, onRetry, onStartOver, onEditSelections }: Props) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       {response.kind === "safe_routine" && <SafeRoutineView data={response} />}
       {response.kind === "generation_fallback" && (
         <GenerationFallbackView data={response} onRetry={onRetry} />

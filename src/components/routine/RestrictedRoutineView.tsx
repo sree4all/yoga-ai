@@ -7,7 +7,7 @@ interface Props {
 export function RestrictedRoutineView({ data }: Props) {
   const { restricted } = data;
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <article className="yoga-panel p-6">
       <p className="text-sm text-slate-600">{data.disclaimer}</p>
       <h2 className="mt-4 text-lg font-semibold text-slate-900">Gentle breathing & rest</h2>
       <p className="mt-2 text-sm text-slate-700">

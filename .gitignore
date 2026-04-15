@@ -41,3 +41,4 @@ next-env.d.ts
 # Optional local YTT / curriculum (zip, PDF, exports) — not tracked; see content/ytt-source/.gitkeep
 content/ytt-source/*
 !content/ytt-source/.gitkeep
+docs/.trainingData/*

@@ -61,6 +61,33 @@ describe("routineResponseSchema", () => {
     expect(r.success).toBe(true);
   });
 
+  it("accepts safe_routine with extended StepMedia (MVP3)", () => {
+    const r = routineResponseSchema.safeParse({
+      kind: "safe_routine",
+      disclaimer: "x",
+      routine: {
+        title: "Test",
+        totalDurationMinutes: 10,
+        yogaStyle: { category: "Hatha", rationale: "Gentle pacing." },
+        steps: [
+          {
+            poseId: "cat_cow",
+            instruction: "Move slowly.",
+            durationSeconds: 60,
+            media: {
+              imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/example.jpg",
+              imageAttribution: "Wikimedia Commons — CC BY-SA",
+              videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+              videoTitle: "Gentle cat-cow",
+              videoLabel: "Fallback label",
+            },
+          },
+        ],
+      },
+    });
+    expect(r.success).toBe(true);
+  });
+
   it("accepts generation_fallback", () => {
     const r = routineResponseSchema.safeParse({
       kind: "generation_fallback",

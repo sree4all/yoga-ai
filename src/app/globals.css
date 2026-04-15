@@ -5,9 +5,50 @@
 :root {
   --foreground: #0f172a;
   --background: #f8fafc;
+  --yoga-panel-bg: rgba(255, 255, 255, 0.92);
+  --yoga-panel-border: rgba(167, 139, 250, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #f1f5f9;
+    --background: #0f172a;
+    --yoga-panel-bg: rgba(15, 23, 42, 0.92);
+    --yoga-panel-border: rgba(139, 92, 246, 0.35);
+  }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+}
+
+@layer components {
+  .yoga-app-bg {
+    background: linear-gradient(
+      165deg,
+      #f5f3ff 0%,
+      #ecfdf5 42%,
+      #fdf4ff 100%
+    );
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .yoga-app-bg {
+      background: linear-gradient(165deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    }
+  }
+
+  .yoga-panel {
+    border-color: var(--yoga-panel-border);
+    background: var(--yoga-panel-bg);
+    @apply rounded-2xl border shadow-lg shadow-violet-900/10 backdrop-blur-sm;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .yoga-reduce-motion {
+      animation: none !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }

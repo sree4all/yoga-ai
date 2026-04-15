@@ -46,9 +46,22 @@ const breathingStepSchema = z
   })
   .strict();
 
+const optionalYoutubeHttpsUrl = z
+  .string()
+  .url()
+  .refine(
+    (u) =>
+      u.startsWith("https://") &&
+      (/youtube\.com\//i.test(u) || /youtu\.be\//i.test(u)),
+    { message: "Must be an https YouTube watch or youtu.be URL" },
+  );
+
 const stepMediaSchema = z
   .object({
     imageUrl: z.string().min(1),
+    imageAttribution: z.string().optional(),
+    videoUrl: optionalYoutubeHttpsUrl.optional(),
+    videoTitle: z.string().optional(),
     videoLabel: z.string().min(1),
   })
   .strict();

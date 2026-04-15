@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yoga-ai.local/contracts/mvp3/routine-response.schema.json",
+  "title": "RoutineResponse (MVP3 — enriched step media)",
+  "description": "Extends MVP2 safe_routine: step.media adds optional imageAttribution, videoUrl, videoTitle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "disclaimer"],
+  "properties": {
+    "kind": { "type": "string", "enum": ["safe_routine", "restricted", "generation_fallback"] },
+    "disclaimer": {
+      "type": "string",
+      "description": "Non-medical positioning copy; not a substitute for professional advice."
+    },
+    "routine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "totalDurationMinutes", "yogaStyle", "steps"],
+      "properties": {
+        "title": { "type": "string" },
+        "totalDurationMinutes": { "type": "number", "minimum": 1, "maximum": 30 },
+        "yogaStyle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["category", "rationale"],
+          "properties": {
+            "category": { "type": "string" },
+            "rationale": { "type": "string" }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["poseId", "instruction", "media"],
+            "properties": {
+              "poseId": { "type": "string" },
+              "instruction": { "type": "string" },
+              "durationSeconds": { "type": "number", "minimum": 0 },
+              "media": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["imageUrl", "videoLabel"],
+                "properties": {
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URI for pose image (validated server-side; may be placeholder)."
+                  },
+                  "imageAttribution": {
+                    "type": "string",
+                    "description": "Optional credit line when required (e.g. Wikimedia Commons)."
+                  },
+                  "videoUrl": {
+                    "type": "string",
+                    "description": "Optional https link to a public YouTube watch or short URL."
+                  },
+                  "videoTitle": {
+                    "type": "string",
+                    "description": "Display title when videoUrl is present."
+                  },
+                  "videoLabel": {
+                    "type": "string",
+                    "description": "Always present; label or search hint when videoUrl is absent."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "restricted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["breathingSteps"],
+      "properties": {
+        "breathingSteps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["instruction"],
+            "properties": {
+              "instruction": { "type": "string" },
+              "durationSeconds": { "type": "number", "minimum": 0 }
+            }
+          }
+        },
+        "careGuidance": { "type": "string" }
+      }
+    },
+    "fallback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["message", "breathingSteps", "retryAvailable"],
+      "properties": {
+        "message": { "type": "string" },
+        "breathingSteps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["instruction"],
+            "properties": {
+              "instruction": { "type": "string" },
+              "durationSeconds": { "type": "number", "minimum": 0 }
+            }
+          }
+        },
+        "retryAvailable": { "type": "boolean", "const": true }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "safe_routine" } } },
+      "then": { "required": ["routine"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "restricted" } } },
+      "then": { "required": ["restricted"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "generation_fallback" } } },
+      "then": { "required": ["fallback"] }
+    }
+  ]
+}
