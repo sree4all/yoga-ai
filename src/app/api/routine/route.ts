@@ -9,6 +9,17 @@ import {
   resolveRoutineGenerationBackend,
   routineGenerationTemperature,
 } from "@/lib/gen/orchestrator";
+import {
+  allowedPoseIdsForRoutines,
+  applyCorpusInstructionEnrichment,
+  applyCorpusStillImageDefaults,
+  clampRoutineToAllowedPoses,
+  corpusBundleVersion,
+  corpusLoadedAt,
+  loadCorpusBundle,
+  resolveCatalogTags,
+  routinesForTags,
+} from "@/lib/corpus/bundle";
 import { validateRoutineAgainstAvoidList } from "@/lib/knowledge/validate-routine";
 import type { BodyRegion } from "@/lib/types/intake";
 import { API_RESPONSE_DISCLAIMER } from "@/lib/copy/disclaimer";
@@ -125,8 +136,20 @@ export async function POST(req: Request) {
   const timer = setTimeout(() => controller.abort(), ms);
 
   try {
+    const corpus = await loadCorpusBundle();
+    const corpusTags = corpus ? resolveCatalogTags(corpus, body) : [];
+    const corpusRoutines = corpus ? routinesForTags(corpus, corpusTags) : [];
+    const allowedPoseIds = corpus ? allowedPoseIdsForRoutines(corpusRoutines) : [];
+    const enrichmentSnippets = (corpus?.enrichmentLibrary ?? [])
+      .map((s) => s.text)
+      .filter((t) => t.length > 0);
+
     let generated = await generateRoutineStructured(body, entry, {
       signal: controller.signal,
+      constrainedPoseIds: allowedPoseIds.length > 0 ? allowedPoseIds : undefined,
+      catalogTags: corpusTags.length > 0 ? corpusTags : undefined,
+      enrichmentSnippets:
+        enrichmentSnippets.length > 0 ? enrichmentSnippets : undefined,
     });
     clearTimeout(timer);
 
@@ -136,6 +159,15 @@ export async function POST(req: Request) {
     );
     if (!avoidCheck.ok) {
       generated = mockRoutineFromKnowledge(entry);
+    }
+    if (corpus && allowedPoseIds.length > 0) {
+      generated = clampRoutineToAllowedPoses(
+        corpus,
+        generated,
+        new Set(allowedPoseIds),
+      );
+      generated = applyCorpusStillImageDefaults(corpus, generated);
+      generated = applyCorpusInstructionEnrichment(corpus, generated);
     }
 
     try {
@@ -199,6 +231,7 @@ function youtubeEnrichmentConfigured(): boolean {
 }
 
 export async function GET() {
+  await loadCorpusBundle();
   return NextResponse.json({
     ok: true,
     service: "yoga-ai-routine",
@@ -207,5 +240,7 @@ export async function GET() {
     routineGenTemperature: routineGenerationTemperature(),
     mediaEnrichmentCommons: true,
     mediaEnrichmentYoutubeConfigured: youtubeEnrichmentConfigured(),
+    corpusBundleVersion: corpusBundleVersion(),
+    corpusLoadedAt: corpusLoadedAt(),
   });
 }

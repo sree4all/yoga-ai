@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yoga-ai.local/specs/004-mvp4-routine-data-corpus/corpus-bundle.schema.json",
+  "title": "MVP4 routine corpus bundle",
+  "description": "Atomic joint release: routines + intake mapping + pose asset index (FR-014). English-only instructional strings (FR-013). No video in corpus (SC-003).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bundleVersion", "schemaVersion", "routines", "intakeMapping", "poseAssetIndex"],
+  "properties": {
+    "bundleVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semver; shared with mapping and docs (SC-010)."
+    },
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "routines": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/curatedRoutine" }
+    },
+    "intakeMapping": {
+      "type": "object",
+      "description": "Maps intake dimensions to catalogTags; exact inner shape implemented per plan (FR-011).",
+      "additionalProperties": true
+    },
+    "poseAssetIndex": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/poseAssetEntry" }
+    },
+    "enrichmentLibrary": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/enrichmentSnippet" }
+    },
+    "safetySubstitutions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Disallowed or unknown poseId → allowed substitute poseId"
+    }
+  },
+  "$defs": {
+    "curatedRoutine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "totalDurationSeconds", "catalogTags", "steps"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "totalDurationSeconds": { "type": "integer", "minimum": 300, "maximum": 900 },
+        "catalogTags": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/corpusStep" }
+        },
+        "enrichmentRefs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "corpusStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["poseId", "durationSeconds", "cues"],
+      "properties": {
+        "poseId": { "type": "string", "minLength": 1 },
+        "durationSeconds": { "type": "integer", "minimum": 5, "maximum": 600 },
+        "cues": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "sanskritName": { "type": "string" },
+        "quoteRef": { "type": "string" }
+      }
+    },
+    "poseAssetEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["displayName"],
+      "properties": {
+        "displayName": { "type": "string" },
+        "sanskritName": { "type": "string" },
+        "stillImage": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "HTTPS path or app-relative e.g. /routine-corpus/assets/foo.svg"
+            },
+            "sourceTrainingDataPath": {
+              "type": "string",
+              "description": "Optional traceability to docs/.trainingData"
+            }
+          }
+        },
+        "fallback": { "type": "boolean" }
+      }
+    },
+    "enrichmentSnippet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "text"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["quote", "breath", "mindfulness", "sanskrit_gloss"]
+        },
+        "text": { "type": "string", "minLength": 1 },
+        "attribution": { "type": "string" }
+      }
+    }
+  }
+}

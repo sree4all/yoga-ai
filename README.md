@@ -15,6 +15,9 @@ Minimal **Next.js (App Router)** web app: structured intake → deterministic sa
 | `npm run start` | Run production server |
 | `npm run lint` | ESLint (Next + jsx-a11y) |
 | `npm run test` | Vitest unit tests |
+| `npm run build:corpus` | Build `docs/routine-corpus/bundle.json` from source files |
+| `npm run sync:pose-assets` | Copy training SVGs into `public/routine-corpus/assets/` |
+| `npm run validate:corpus` | Validate corpus duration, policy, and no-video rules |
 
 ## Environment
 

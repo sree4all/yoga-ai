@@ -1,0 +1,201 @@
+{
+  "easy_seated": {
+    "displayName": "Easy Seated",
+    "sanskritName": "Sukhasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-easy.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga easy.svg"
+    }
+  },
+  "cat": {
+    "displayName": "Cat",
+    "sanskritName": "Marjaryasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-cat.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga cat.svg"
+    }
+  },
+  "cow": {
+    "displayName": "Cow",
+    "sanskritName": "Bitilasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-cow.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga cow.svg"
+    }
+  },
+  "downward_facing_dog": {
+    "displayName": "Downward Facing Dog",
+    "sanskritName": "Adho Mukha Svanasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-downward-facing-dog.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga downward facing dog.svg"
+    }
+  },
+  "high_lunge": {
+    "displayName": "High Lunge",
+    "sanskritName": "Alanasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-high-lunge.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga high lunge.svg"
+    }
+  },
+  "warrior_1": {
+    "displayName": "Warrior I",
+    "sanskritName": "Virabhadrasana I",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-warrior-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga warrior 1.svg"
+    }
+  },
+  "warrior_2": {
+    "displayName": "Warrior II",
+    "sanskritName": "Virabhadrasana II",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-warrior-2.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga warrior 2.svg"
+    }
+  },
+  "triangle": {
+    "displayName": "Triangle",
+    "sanskritName": "Trikonasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-triangle.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga triangle.svg"
+    }
+  },
+  "reverse_warrior": {
+    "displayName": "Reverse Warrior",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-reverse-warrior.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga reverse warrior.svg"
+    }
+  },
+  "half_moon": {
+    "displayName": "Half Moon",
+    "sanskritName": "Ardha Chandrasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-half-moon.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga half moon.svg"
+    }
+  },
+  "lizard": {
+    "displayName": "Lizard",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-lizard.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga lizard.svg"
+    }
+  },
+  "pigeon": {
+    "displayName": "Pigeon",
+    "sanskritName": "Eka Pada Rajakapotasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-pigeon.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga pigeon.svg"
+    }
+  },
+  "standing_forward_fold": {
+    "displayName": "Standing Forward Fold",
+    "sanskritName": "Uttanasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-standing-forward-fold-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga standing forward fold 1.svg"
+    }
+  },
+  "seated_forward_fold": {
+    "displayName": "Seated Forward Fold",
+    "sanskritName": "Paschimottanasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-seated-forward-fold-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga seated forward fold 1.svg"
+    }
+  },
+  "seated_spinal_twist": {
+    "displayName": "Seated Spinal Twist",
+    "sanskritName": "Ardha Matsyendrasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-seated-spinal-twist-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga seated spinal twist 1.svg"
+    }
+  },
+  "bound_angle": {
+    "displayName": "Bound Angle",
+    "sanskritName": "Baddha Konasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-bound-angle-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga bound angle 1.svg"
+    }
+  },
+  "happy_baby": {
+    "displayName": "Happy Baby",
+    "sanskritName": "Ananda Balasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-happy-baby.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga happy baby.svg"
+    }
+  },
+  "supine_twist": {
+    "displayName": "Supine Twist",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-supine-twist-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga supine twist 1.svg"
+    }
+  },
+  "boat": {
+    "displayName": "Boat",
+    "sanskritName": "Navasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-boat-2.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga boat 2.svg"
+    }
+  },
+  "locust": {
+    "displayName": "Locust",
+    "sanskritName": "Salabhasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-locust.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga locust.svg"
+    }
+  },
+  "dolphin": {
+    "displayName": "Dolphin",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-dolphin.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga dolphin.svg"
+    }
+  },
+  "balancing_table": {
+    "displayName": "Balancing Table",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-balancing-table.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga balancing table.svg"
+    }
+  },
+  "camel": {
+    "displayName": "Camel",
+    "sanskritName": "Ustrasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-camel-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga camel 1.svg"
+    }
+  },
+  "goddess": {
+    "displayName": "Goddess",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-goddess-1.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga goddess 1.svg"
+    }
+  },
+  "tree": {
+    "displayName": "Tree",
+    "sanskritName": "Vrksasana",
+    "stillImage": {
+      "path": "/routine-corpus/assets/yoga-tree-2.svg",
+      "sourceTrainingDataPath": "docs/.trainingData/Yoga Stick Figures/Yoga Stick Figures/SVG/black/yoga tree 2.svg"
+    }
+  },
+  "childs_pose": {
+    "displayName": "Child's Pose",
+    "sanskritName": "Balasana",
+    "fallback": true
+  }
+}

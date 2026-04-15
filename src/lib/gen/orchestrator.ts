@@ -41,13 +41,23 @@ export interface GeneratedRoutinePayload {
 export async function generateRoutineStructured(
   request: RoutineRequest,
   entry: KnowledgeEntry,
-  options?: { signal?: AbortSignal },
+  options?: {
+    signal?: AbortSignal;
+    constrainedPoseIds?: string[];
+    catalogTags?: string[];
+    enrichmentSnippets?: string[];
+  },
 ): Promise<GeneratedRoutinePayload> {
   const diversityNonce = randomBytes(12).toString("hex");
   const { systemPrompt, userPrompt } = composeOrchestratorPrompts(
     request,
     entry,
-    { diversityNonce },
+    {
+      diversityNonce,
+      constrainedPoseIds: options?.constrainedPoseIds,
+      catalogTags: options?.catalogTags,
+      enrichmentSnippets: options?.enrichmentSnippets,
+    },
   );
   const signal = options?.signal;
 
