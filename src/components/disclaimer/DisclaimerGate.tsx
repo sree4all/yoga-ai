@@ -8,10 +8,7 @@ interface DisclaimerGateProps {
 
 export function DisclaimerGate({ onAcknowledged }: DisclaimerGateProps) {
   return (
-    <section
-      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-      aria-labelledby="disclaimer-heading"
-    >
+    <section className="yoga-panel p-6" aria-labelledby="disclaimer-heading">
       <h1 id="disclaimer-heading" className="text-xl font-semibold text-slate-900">
         Before we begin
       </h1>

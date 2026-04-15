@@ -137,6 +137,24 @@ export async function POST(req: Request) {
       generated = mockRoutineFromKnowledge(entry);
     }
 
+    try {
+      const { enrichGeneratedRoutine } = await import("@/lib/media/enrich-steps");
+      generated = await enrichGeneratedRoutine(generated, {
+        signal: controller.signal,
+        youtubeApiKey: process.env.YOUTUBE_DATA_API_KEY,
+      });
+    } catch (enrichErr) {
+      const e = enrichErr instanceof Error ? enrichErr : new Error(String(enrichErr));
+      console.error(
+        JSON.stringify({
+          source: "yoga-ai-routine",
+          event: "enrich_failed",
+          errorName: e.name,
+          errorMessage: e.message.slice(0, 300),
+        }),
+      );
+    }
+
     const payload = {
       kind: "safe_routine" as const,
       disclaimer: API_RESPONSE_DISCLAIMER,
@@ -175,6 +193,10 @@ export async function POST(req: Request) {
 }
 
 /** Health + which generation path is configured (no secrets). */
+function youtubeEnrichmentConfigured(): boolean {
+  return Boolean(process.env.YOUTUBE_DATA_API_KEY?.trim());
+}
+
 export async function GET() {
   return NextResponse.json({
     ok: true,
@@ -182,5 +204,7 @@ export async function GET() {
     generationBackend: resolveRoutineGenerationBackend(),
     routineGenTimeoutMs: timeoutMs(),
     routineGenTemperature: routineGenerationTemperature(),
+    mediaEnrichmentCommons: true,
+    mediaEnrichmentYoutubeConfigured: youtubeEnrichmentConfigured(),
   });
 }

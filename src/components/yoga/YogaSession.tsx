@@ -95,11 +95,13 @@ export function YogaSession() {
   }, [lastBody]);
 
   return (
-    <div className="mx-auto flex max-w-lg flex-col gap-6 px-4 py-8">
-      <header>
-        <p className="text-sm font-medium uppercase tracking-wide text-emerald-800">Yoga.ai</p>
-        <h1 className="mt-1 text-2xl font-semibold text-slate-900">10-minute gentle movement</h1>
-        <p className="mt-2 text-sm text-slate-600">
+    <div className="mx-auto flex min-h-[70vh] max-w-xl flex-col gap-6 px-4 py-10">
+      <header className="yoga-panel p-5">
+        <p className="text-sm font-medium uppercase tracking-wide text-teal-800">Yoga.ai</p>
+        <h1 className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">
+          10-minute gentle movement
+        </h1>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
           A short intake helps us suggest a supportive, non-medical routine.
         </p>
       </header>

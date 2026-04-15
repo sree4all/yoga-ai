@@ -179,10 +179,7 @@ export function IntakeFlow({
   };
 
   return (
-    <section
-      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-      aria-live="polite"
-    >
+    <section className="yoga-panel p-6" aria-live="polite">
       <h2 className="text-lg font-semibold text-slate-900">Quick intake</h2>
       <p className="mt-1 text-sm text-slate-600">
         Step {step + 1} of {steps.length}
