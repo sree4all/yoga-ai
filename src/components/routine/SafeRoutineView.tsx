@@ -10,8 +10,48 @@ interface Props {
   data: Extract<RoutineResponse, { kind: "safe_routine" }>;
 }
 
+const POSE_LABELS: Record<string, string> = {
+  easy_seated: "Easy Seated",
+  cat: "Cat Pose",
+  cow: "Cow Pose",
+  balancing_table: "Balancing Table",
+  childs_pose: "Child's Pose",
+  downward_facing_dog: "Downward Facing Dog",
+  standing_forward_fold: "Standing Forward Fold",
+  bound_angle: "Bound Angle Pose",
+  supine_twist: "Supine Twist",
+  happy_baby: "Happy Baby",
+  seated_spinal_twist: "Seated Spinal Twist",
+  seated_forward_fold: "Seated Forward Fold",
+  high_lunge: "High Lunge",
+  warrior_1: "Warrior I",
+  warrior_2: "Warrior II",
+  reverse_warrior: "Reverse Warrior",
+  triangle: "Triangle Pose",
+  half_moon: "Half Moon Pose",
+  lizard: "Lizard Pose",
+  pigeon: "Pigeon Pose",
+  boat: "Boat Pose",
+  locust: "Locust Pose",
+  dolphin: "Dolphin Pose",
+  camel: "Camel Pose",
+  goddess: "Goddess Pose",
+  tree: "Tree Pose",
+  savasana: "Savasana",
+};
+
 function isLocalImageUrl(url: string): boolean {
   return url.startsWith("/") && !url.startsWith("//");
+}
+
+function friendlyPoseLabel(poseId: string): string {
+  return (
+    POSE_LABELS[poseId] ??
+    poseId
+      .split("_")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  );
 }
 
 function StepPoseImage({
@@ -43,7 +83,7 @@ function StepPoseImage({
     );
   }
 
-  /* Plain <img> avoids Next/Image optimizer. Default referrer is fine for upload.wikimedia.org thumbs. */
+  /* Plain <img> avoids Next/Image optimizer for local corpus assets. */
   return (
     // eslint-disable-next-line @next/next/no-img-element -- external pose URLs; avoid Image optimizer
     <img
@@ -87,7 +127,7 @@ export function SafeRoutineView({ data }: Props) {
 
       <ol className="mt-6 list-decimal space-y-8 pl-5 marker:font-medium marker:text-teal-800">
         {routine.steps.map((s, i) => {
-          const poseLabel = s.poseId.replace(/_/g, " ");
+          const poseLabel = friendlyPoseLabel(s.poseId);
           const hasVideo = Boolean(s.media.videoUrl?.trim());
           const showLocalImage = isLocalImageUrl(s.media.imageUrl);
           return (

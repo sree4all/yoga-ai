@@ -84,9 +84,10 @@ async function enrichStep(
   const videoLabel = step.media.videoLabel;
 
   if (!imageUrl.trim()) {
-    imageUrl = "/routine-corpus/assets/yoga-easy-seated.svg";
+    imageUrl = "about:blank";
   }
   if (!imageUrl.startsWith("/")) {
+    imageUrl = "about:blank";
     imageAttribution = undefined;
   }
 

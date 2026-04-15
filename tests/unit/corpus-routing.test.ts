@@ -82,9 +82,14 @@ describe("corpus routing and constraints", () => {
           media: { imageUrl: "https://example.com/a.png", videoLabel: "x" },
         },
       ],
+    }, {
+      candidateRoutines: routinesForTags(parsed, resolveCatalogTags(parsed, request)),
+      request,
     });
     const ids = out.steps.map((step) => step.poseId);
     expect(ids.filter((id) => id === "easy_seated")).toHaveLength(1);
     expect(ids[ids.length - 1]).toBe("savasana");
+    expect(out.totalDurationMinutes).toBeGreaterThanOrEqual(9);
+    expect(out.yogaStyle.category).toBe("Restorative");
   });
 });
